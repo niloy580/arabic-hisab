@@ -17,11 +17,20 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Accept licenses
+      - name: Install Android SDK
         run: |
-          export ANDROID_HOME=$ANDROID_SDK_ROOT
-          yes | sdkmanager --licenses || true
-          sdkmanager "platforms;android-34" "build-tools;34.0.0"
+          wget -q https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip -O cmdtools.zip
+          mkdir -p $HOME/android/cmdline-tools
+          unzip -q cmdtools.zip -d $HOME/android/cmdline-tools
+          mv $HOME/android/cmdline-tools/cmdline-tools $HOME/android/cmdline-tools/latest
+          echo "ANDROID_HOME=$HOME/android" >> $GITHUB_ENV
+          echo "$HOME/android/cmdline-tools/latest/bin" >> $GITHUB_PATH
+
+      - name: Accept licenses
+        run: yes | sdkmanager --licenses
+
+      - name: Install platform
+        run: sdkmanager "platforms;android-34" "build-tools;34.0.0"
 
       - name: Build APK
         run: chmod +x gradlew && ./gradlew assembleDebug --no-daemon
