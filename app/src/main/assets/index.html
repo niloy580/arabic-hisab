@@ -1,0 +1,2104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Arabic Hisab — حساب عربي</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',Tahoma,Arial,sans-serif;background:linear-gradient(135deg,#0f1c2e 0%,#1a2f4a 100%);min-height:100vh;color:#e2e8f0}
+:root{--navy:#0f1c2e;--navy2:#1a2f4a;--gold:#f0a500;--gold2:#fbbf24;--white:#ffffff;--card:#ffffff;--border:#e2e8f0;--text:#1a202c;--muted:#718096;--danger:#e53e3e;--success:#38a169;--radius:12px;--shadow:0 4px 24px rgba(0,0,0,0.15)}
+
+/* LOGIN */
+#loginPage{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px}
+.lbox{background:rgba(255,255,255,0.06);backdrop-filter:blur(20px);border:1px solid rgba(240,165,0,0.3);border-radius:20px;padding:40px 36px;width:100%;max-width:420px;box-shadow:0 20px 60px rgba(0,0,0,0.4)}
+.lbox-logo{text-align:center;margin-bottom:28px}
+.lbox-logo svg{width:64px;height:64px;margin-bottom:10px}
+.lbox-logo h1{font-size:26px;font-weight:700;color:var(--gold);letter-spacing:1px}
+.lbox-logo p{font-size:13px;color:rgba(255,255,255,0.5);margin-top:4px}
+.lbtn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:13px 20px;border:none;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;transition:all .2s}
+.lbtn-gmail{background:linear-gradient(135deg,#f0a500,#e67e00);color:#fff;margin-bottom:12px}
+.lbtn-gmail:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(240,165,0,0.4)}
+.lbtn-quick{background:rgba(255,255,255,0.1);color:#fff;border:1px solid rgba(255,255,255,0.2)}
+.lbtn-quick:hover{background:rgba(255,255,255,0.18)}
+#gmailForm{display:none;margin-bottom:14px}
+#gmailForm input{width:100%;padding:12px 16px;border-radius:8px;border:1px solid rgba(255,255,255,0.2);background:rgba(255,255,255,0.08);color:#fff;font-size:14px;margin-bottom:8px;outline:none}
+#gmailForm input::placeholder{color:rgba(255,255,255,0.4)}
+#gmailForm input:focus{border-color:var(--gold)}
+#lerr{color:#fc8181;font-size:12px;margin-top:4px;min-height:18px}
+.saved-accts{margin-top:22px;border-top:1px solid rgba(255,255,255,0.1);padding-top:18px}
+.saved-accts h4{font-size:12px;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px}
+.acct-item{display:flex;align-items:center;padding:10px 12px;border-radius:8px;background:rgba(255,255,255,0.06);margin-bottom:6px;cursor:pointer;transition:background .15s;gap:8px}
+.acct-item:hover{background:rgba(255,255,255,0.12)}
+.acct-dot{width:8px;height:8px;border-radius:50%;background:var(--gold);flex-shrink:0}
+.acct-email{color:#e2e8f0;font-size:13px;flex:1}
+/* LOGIN TABS & AUTH */
+.l-tabs{display:flex;gap:8px;margin-bottom:18px}
+.l-tab{flex:1;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.05);color:rgba(255,255,255,0.6);font-size:14px;font-weight:600;cursor:pointer;transition:all .2s}
+.l-tab.l-tab-on{background:linear-gradient(135deg,#f0a500,#e67e00);border-color:transparent;color:#fff}
+.l-tab:hover:not(.l-tab-on){background:rgba(255,255,255,0.1);color:#fff}
+#l-user input,#l-admin input{width:100%;padding:12px 16px;border-radius:8px;border:1px solid rgba(255,255,255,0.2);background:rgba(255,255,255,0.08);color:#fff;font-size:14px;margin-bottom:8px;outline:none}
+#l-user input::placeholder,#l-admin input::placeholder{color:rgba(255,255,255,0.4)}
+#l-user input:focus,#l-admin input:focus{border-color:var(--gold)}
+/* USER MANAGEMENT */
+.users-tbl{width:100%;border-collapse:collapse;font-size:13px}
+.users-tbl th{background:rgba(240,165,0,0.1);padding:8px 10px;text-align:left;border-bottom:2px solid rgba(240,165,0,0.3);color:var(--gold2);font-weight:600}
+.users-tbl td{padding:8px 10px;border-bottom:1px solid rgba(255,255,255,0.08);vertical-align:middle}
+.users-tbl tr:hover td{background:rgba(255,255,255,0.03)}
+.pass-cell{display:flex;align-items:center;gap:6px}
+.pass-val{font-family:monospace;letter-spacing:1px;color:rgba(255,255,255,0.5)}
+.pass-eye{background:none;border:1px solid rgba(255,255,255,0.2);color:rgba(255,255,255,0.6);border-radius:4px;padding:2px 7px;cursor:pointer;font-size:12px}
+.pass-eye:hover{border-color:var(--gold);color:var(--gold)}
+.user-status-on{color:#68d391;font-weight:700}.user-status-off{color:#fc8181;font-weight:700}
+.admin-only-tab{display:none}
+
+/* APP */
+#appPage{display:none}
+.topNav{background:rgba(10,18,30,0.95);backdrop-filter:blur(10px);border-bottom:1px solid rgba(240,165,0,0.2);padding:0 20px;display:flex;align-items:center;gap:4px;height:56px;position:sticky;top:0;z-index:100}
+.topNav-brand{display:flex;align-items:center;gap:10px;margin-right:16px;text-decoration:none}
+.topNav-brand svg{width:32px;height:32px}
+.topNav-brand span{font-weight:700;font-size:16px;color:var(--gold)}
+.topNav-spacer{flex:1}
+.nav-btn{display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border-radius:8px;border:none;background:transparent;color:rgba(255,255,255,0.75);font-size:12px;cursor:pointer;transition:all .18s}
+.nav-btn:hover{background:rgba(240,165,0,0.12);color:var(--gold)}
+.nav-btn svg{width:16px;height:16px;flex-shrink:0}
+#userBadge{background:rgba(240,165,0,0.15);border:1px solid rgba(240,165,0,0.3);color:var(--gold2);padding:5px 12px;border-radius:20px;font-size:12px;font-weight:600}
+
+/* BREADCRUMB */
+.bc{background:rgba(240,165,0,0.08);border-bottom:1px solid rgba(240,165,0,0.1);padding:8px 24px;display:flex;align-items:center;gap:8px}
+.bc svg{width:14px;height:14px;color:var(--gold)}
+#bcLabel{font-size:13px;font-weight:600;color:var(--gold2)}
+
+/* PAGES */
+.page{display:none;padding:24px;max-width:1200px;margin:0 auto}
+
+/* ── DASHBOARD ── */
+.dash-top{margin-bottom:20px}
+.dash-company{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid rgba(255,255,255,0.1)}
+.dash-company-name{font-size:18px;font-weight:700;color:var(--gold)}
+.dash-company-sub{font-size:11px;color:rgba(255,255,255,0.45);margin-top:2px}
+.dash-date{text-align:right;font-size:11px;color:rgba(255,255,255,0.4)}
+.dash-date b{display:block;color:rgba(255,255,255,0.7);font-size:13px}
+
+/* KPI STAT CARDS */
+.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:22px}
+.kpi{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:14px 16px;position:relative;overflow:hidden;transition:all .2s}
+.kpi::after{content:'';position:absolute;top:0;left:0;width:4px;height:100%;border-radius:4px 0 0 4px}
+.kpi-sales::after{background:#1a56db}
+.kpi-purchase::after{background:#7e3af2}
+.kpi-vat::after{background:#e3a008}
+.kpi-clients::after{background:#057a55}
+.kpi label{font-size:10px;color:rgba(255,255,255,0.45);text-transform:uppercase;letter-spacing:.6px;font-weight:600}
+.kpi .kpi-val{font-size:22px;font-weight:700;color:#fff;margin:4px 0 2px;line-height:1}
+.kpi .kpi-sub{font-size:10px;color:rgba(255,255,255,0.4)}
+.kpi svg{position:absolute;top:12px;right:12px;width:22px;height:22px;opacity:.25}
+
+/* MENU GRID */
+.menu-section-title{font-size:10px;font-weight:700;color:rgba(255,255,255,0.35);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;padding-left:2px}
+.tilesGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.tile{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:14px 16px;cursor:pointer;transition:all .18s;display:flex;align-items:center;gap:14px;position:relative;overflow:hidden}
+.tile::after{content:'';position:absolute;right:14px;top:50%;transform:translateY(-50%);width:6px;height:6px;border-top:2px solid rgba(255,255,255,0.2);border-right:2px solid rgba(255,255,255,0.2);transform:translateY(-50%) rotate(45deg)}
+.tile:hover{background:rgba(255,255,255,0.1);border-color:rgba(240,165,0,0.35);transform:translateX(3px)}
+.tile-icon{width:44px;height:44px;border-radius:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.tile-icon svg{width:22px;height:22px}
+.tile-text{}
+.tile h3{font-size:13px;font-weight:600;color:#fff;margin-bottom:2px}
+.tile p{font-size:11px;color:rgba(255,255,255,0.4)}
+.tile-sales .tile-icon{background:linear-gradient(135deg,#1a56db,#1e40af)}
+.tile-purchases .tile-icon{background:linear-gradient(135deg,#7e3af2,#6d28d9)}
+.tile-items .tile-icon{background:linear-gradient(135deg,#0694a2,#0e7490)}
+.tile-clients .tile-icon{background:linear-gradient(135deg,#057a55,#065f46)}
+.tile-vat .tile-icon{background:linear-gradient(135deg,#e3a008,#b45309)}
+.tile-daily .tile-icon{background:linear-gradient(135deg,#e02424,#991b1b)}
+.tile-salesman .tile-icon{background:linear-gradient(135deg,#1c64f2,#1e3a8a)}
+.tile-settings .tile-icon{background:linear-gradient(135deg,#374151,#1f2937)}
+.tile-groups .tile-icon{background:linear-gradient(135deg,#6366f1,#4338ca)}
+.tile-creditors .tile-icon{background:linear-gradient(135deg,#d97706,#92400e)}
+.tile-reports .tile-icon{background:linear-gradient(135deg,#10b981,#065f46)}
+.tile-logout .tile-icon{background:linear-gradient(135deg,#ef4444,#b91c1c)}
+.vat-badge{background:var(--gold);color:#000;font-size:9px;font-weight:700;padding:1px 5px;border-radius:3px;margin-left:6px;vertical-align:middle}
+
+/* CARD — premium dark glass */
+.card{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.09);border-radius:16px;margin-bottom:18px;overflow:hidden;backdrop-filter:blur(4px)}
+.card-head{background:rgba(0,0,0,0.35);border-bottom:1px solid rgba(255,255,255,0.08);padding:14px 20px;display:flex;align-items:center;gap:10px}
+.card-head svg{width:20px;height:20px;color:var(--gold)}
+.card-head h3{font-size:14px;font-weight:700;color:#fff;letter-spacing:.2px}
+.card-body{padding:18px 20px}
+
+/* FORM GRID */
+.frow{display:grid;gap:10px;margin-bottom:12px}
+.frow-2{grid-template-columns:1fr 1fr}
+.frow-3{grid-template-columns:1fr 1fr 1fr}
+.frow-4{grid-template-columns:1fr 1fr 1fr 1fr}
+label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:rgba(240,165,0,0.75);display:block;margin-bottom:5px}
+input,select,textarea{width:100%;padding:9px 12px;border:1px solid rgba(255,255,255,0.12);border-radius:8px;font-size:13px;color:#e2e8f0;background:rgba(0,0,0,0.3);outline:none;transition:border-color .18s,background .18s}
+input:focus,select:focus,textarea:focus{border-color:rgba(240,165,0,0.6);background:rgba(0,0,0,0.45)}
+input[readonly]{opacity:.65;cursor:default}
+select option{background:#0f1c2e;color:#e2e8f0}
+textarea{resize:vertical;min-height:60px}
+input::placeholder{color:rgba(255,255,255,0.25)}
+
+/* TABLE */
+.tbl-wrap{overflow-x:auto;border-radius:10px;border:1px solid rgba(255,255,255,0.09)}
+table{width:100%;border-collapse:collapse;font-size:13px}
+thead tr{background:rgba(240,165,0,0.12)}
+thead th{color:rgba(240,165,0,0.9);padding:10px 10px;font-weight:700;font-size:11px;text-align:left;white-space:nowrap;letter-spacing:.4px;text-transform:uppercase;border-bottom:1px solid rgba(240,165,0,0.2)}
+tbody tr{border-bottom:1px solid rgba(255,255,255,0.05);transition:background .12s}
+tbody tr:last-child{border-bottom:none}
+tbody tr:hover{background:rgba(255,255,255,0.04)}
+tbody td{padding:10px 10px;color:#d1d5db;font-size:13px}
+.empty-row{color:rgba(255,255,255,0.25);text-align:center;padding:24px!important;font-size:12px;letter-spacing:.5px}
+
+/* TOTAL BAR */
+.total-bar{background:rgba(0,0,0,0.4);border:1px solid rgba(240,165,0,0.18);border-radius:12px;padding:16px 22px;display:flex;justify-content:space-between;align-items:center;margin-top:14px;gap:12px;flex-wrap:wrap}
+.total-bar .ti{text-align:center;min-width:80px}
+.total-bar .ti label{color:rgba(255,255,255,0.45);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;margin-bottom:5px}
+.total-bar .ti span{display:block;color:var(--gold);font-size:18px;font-weight:700;letter-spacing:.3px}
+.ti-total span{font-size:24px!important;color:#fff!important}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:7px;padding:10px 20px;border:none;border-radius:9px;font-size:13px;font-weight:700;cursor:pointer;transition:all .18s;letter-spacing:.2px}
+.btn svg{width:15px;height:15px}
+.btn-primary{background:linear-gradient(135deg,var(--gold),#c97b00);color:#fff;box-shadow:0 2px 12px rgba(240,165,0,0.25)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(240,165,0,0.4)}
+.btn-secondary{background:rgba(255,255,255,0.1);color:#e2e8f0;border:1px solid rgba(255,255,255,0.15)}
+.btn-secondary:hover{background:rgba(255,255,255,0.18)}
+.btn-danger{background:linear-gradient(135deg,#e53e3e,#b91c1c);color:#fff;box-shadow:0 2px 10px rgba(229,62,62,0.2)}
+.btn-danger:hover{transform:translateY(-2px);box-shadow:0 8px 18px rgba(229,62,62,0.35)}
+.btn-info{background:linear-gradient(135deg,#2563eb,#1e40af);color:#fff;box-shadow:0 2px 10px rgba(37,99,235,0.2)}
+.btn-info:hover{transform:translateY(-2px);box-shadow:0 8px 18px rgba(37,99,235,0.35)}
+.btn-group{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px;padding-top:14px;border-top:1px solid rgba(255,255,255,0.07)}
+
+/* TABS */
+.tabs{display:inline-flex;gap:3px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:4px;margin-bottom:18px}
+.tab{padding:7px 22px;border:none;background:transparent;border-radius:7px;font-size:12px;font-weight:700;color:rgba(255,255,255,0.4);cursor:pointer;transition:all .18s;letter-spacing:.2px}
+.tab.on{background:rgba(240,165,0,0.2);color:#f0a500;border:1px solid rgba(240,165,0,0.3)}
+.tab-content{display:none}
+.tab-content.on{display:block}
+
+/* MODAL */
+#prevModal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.82);backdrop-filter:blur(6px);z-index:1000;overflow-y:auto;padding:24px}
+.modal-inner{background:#fff;max-width:760px;margin:0 auto;border-radius:16px;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,0.6)}
+.modal-head{background:linear-gradient(135deg,#0a1628,#1a2f4a);padding:14px 20px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(240,165,0,0.2)}
+.modal-head span{color:var(--gold);font-weight:700;font-size:14px;letter-spacing:.3px}
+.modal-head-btns{display:flex;gap:8px;align-items:center}
+.modal-close{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);color:#fff;width:32px;height:32px;border-radius:8px;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .18s}
+.modal-close:hover{background:rgba(229,62,62,0.4);border-color:rgba(229,62,62,0.5)}
+.modal-print-btn{background:linear-gradient(135deg,var(--gold),#c97b00);border:none;color:#fff;padding:6px 16px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:5px;transition:all .18s;letter-spacing:.3px}
+.modal-print-btn:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(240,165,0,0.4)}
+#prevContent{padding:0;background:#fff}
+
+/* PRINT */
+@media print{
+  @page{size:A4 portrait;margin:12mm 14mm 12mm 14mm}
+  html{height:297mm!important;overflow:hidden!important;margin:0!important;padding:0!important}
+  body{height:auto!important;max-height:297mm!important;overflow:hidden!important;margin:0!important;padding:0!important}
+  body>*{display:none!important}
+  #prevModal{display:block!important;position:static!important;background:none!important;padding:0!important;overflow:hidden!important;height:auto!important;max-height:277mm!important;}
+  .modal-inner{box-shadow:none!important;border-radius:0!important;max-width:100%!important;margin:0!important;overflow:hidden!important;height:auto!important;max-height:277mm!important;}
+  .modal-head{display:none!important}
+  #prevContent{padding:0!important;background:transparent!important;overflow:hidden!important;max-height:277mm!important;}
+  .inv-page{max-height:277mm!important;overflow:hidden!important;page-break-after:avoid!important;page-break-inside:avoid!important;}
+}
+
+/* VAT */
+.vat-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.vat-box{border-radius:12px;padding:16px}
+.vat-box-sales{background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.25)}
+.vat-box-sales h4{color:#6ee7b7}
+.vat-box-purch{background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.25)}
+.vat-box-purch h4{color:#fcd34d}
+.vat-box h4{font-size:13px;font-weight:700;margin-bottom:10px}
+.vat-box td,.vat-box th{color:#d1d5db!important;border-color:rgba(255,255,255,0.08)!important}
+.vat-total{background:rgba(0,0,0,0.4);border:1px solid rgba(240,165,0,0.2);border-radius:12px;padding:14px 20px;margin-top:14px;text-align:right}
+.vat-total label{color:rgba(255,255,255,0.5);font-size:12px;text-transform:uppercase;letter-spacing:.5px}
+.vat-total span{display:block;color:var(--gold);font-size:24px;font-weight:700}
+
+@media(max-width:640px){
+  .tilesGrid{grid-template-columns:repeat(2,1fr)}
+  .frow-3,.frow-4{grid-template-columns:1fr 1fr}
+  .topNav .nav-btn span{display:none}
+  .vat-grid{grid-template-columns:1fr}
+}
+@media(max-width:400px){
+  .tilesGrid{grid-template-columns:repeat(2,1fr)}
+}
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="loginPage">
+<div class="lbox">
+  <div class="lbox-logo">
+    <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect width="64" height="64" rx="16" fill="#f0a500" opacity=".15"/>
+      <rect x="8" y="14" width="48" height="36" rx="4" stroke="#f0a500" stroke-width="2.5" fill="none"/>
+      <line x1="8" y1="24" x2="56" y2="24" stroke="#f0a500" stroke-width="2"/>
+      <line x1="22" y1="14" x2="22" y2="50" stroke="#f0a500" stroke-width="1.5" opacity=".5"/>
+      <text x="14" y="38" font-size="8" fill="#f0a500" font-family="Arial" font-weight="bold">١٢٣</text>
+      <text x="28" y="38" font-size="8" fill="#fbbf24" font-family="Arial" font-weight="bold">456</text>
+    </svg>
+    <h1>Arabic Hisab</h1>
+    <p>حساب عربي — ZATCA Compliant</p>
+  </div>
+
+  <!-- LOGIN TABS -->
+  <div class="l-tabs">
+    <button class="l-tab l-tab-on" id="ltab-user" onclick="setLTab('user')">📧 User Login</button>
+    <button class="l-tab" id="ltab-admin" onclick="setLTab('admin')">🔑 Admin</button>
+  </div>
+
+  <!-- USER LOGIN -->
+  <div id="l-user">
+    <input type="email" id="lu-email" placeholder="Gmail Address" autocomplete="email">
+    <input type="password" id="lu-pass" placeholder="Password" autocomplete="current-password">
+    <button class="lbtn lbtn-gmail" onclick="userLogin()">
+      <svg viewBox="0 0 20 20" fill="currentColor" width="18" height="18"><path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"/><path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"/></svg>
+      Login / Register
+    </button>
+    <div id="lerr" style="color:#fc8181;font-size:12px;min-height:18px;margin-top:2px;text-align:center"></div>
+    <div style="font-size:11px;color:rgba(255,255,255,0.4);text-align:center;margin-top:4px">নতুন user? প্রথমবার login করলে account তৈরি হবে</div>
+  </div>
+
+  <!-- ADMIN LOGIN -->
+  <div id="l-admin" style="display:none">
+    <input type="text" id="la-user" placeholder="Username" value="admin" autocomplete="username">
+    <input type="password" id="la-pass" placeholder="Password" autocomplete="current-password">
+    <button class="lbtn lbtn-gmail" onclick="adminLogin()">
+      <svg viewBox="0 0 20 20" fill="currentColor" width="18" height="18"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/></svg>
+      Admin Login
+    </button>
+    <div id="la-err" style="color:#fc8181;font-size:12px;min-height:18px;margin-top:2px;text-align:center"></div>
+    <div style="font-size:11px;color:rgba(255,255,255,0.35);text-align:center;margin-top:4px">Default: admin / Admin@1234</div>
+  </div>
+
+  <div class="saved-accts" id="savedAccts" style="display:none">
+    <h4>Recent Accounts</h4>
+    <div id="acctList"></div>
+  </div>
+</div>
+</div>
+
+<!-- APP -->
+<div id="appPage">
+
+<!-- TOP NAV -->
+<nav class="topNav">
+  <div class="topNav-brand">
+    <svg viewBox="0 0 32 32" fill="none"><rect width="32" height="32" rx="8" fill="#f0a500" opacity=".15"/><rect x="4" y="7" width="24" height="18" rx="2" stroke="#f0a500" stroke-width="1.5" fill="none"/><line x1="4" y1="12" x2="28" y2="12" stroke="#f0a500" stroke-width="1.2"/><line x1="11" y1="7" x2="11" y2="25" stroke="#f0a500" stroke-width="1" opacity=".5"/><text x="6" y="20" font-size="4" fill="#f0a500" font-family="Arial">١٢٣</text><text x="13" y="20" font-size="4" fill="#fbbf24" font-family="Arial">456</text></svg>
+    <span>Arabic Hisab</span>
+  </div>
+  <button class="nav-btn" onclick="show('sales')">
+    <svg viewBox="0 0 20 20" fill="currentColor"><path d="M3 1a1 1 0 000 2h1.22l.305 1.222a.997.997 0 00.01.042l1.358 5.43-.893.892C3.74 11.846 4.632 14 6.414 14H15a1 1 0 000-2H6.414l1-1H14a1 1 0 00.894-.553l3-6A1 1 0 0017 3H6.28l-.31-1.243A1 1 0 005 1H3z"/></svg>
+    <span>Sales</span>
+  </button>
+  <button class="nav-btn" onclick="show('purchases')">
+    <svg viewBox="0 0 20 20" fill="currentColor"><path d="M4 3a2 2 0 100 4h12a2 2 0 100-4H4z"/><path fill-rule="evenodd" d="M3 8h14v7a2 2 0 01-2 2H5a2 2 0 01-2-2V8zm5 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z" clip-rule="evenodd"/></svg>
+    <span>Purchase</span>
+  </button>
+  <button class="nav-btn" onclick="show('vat')">
+    <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm2 10a1 1 0 10-2 0v3a1 1 0 102 0v-3zm2-3a1 1 0 011 1v5a1 1 0 11-2 0v-5a1 1 0 011-1zm4-1a1 1 0 10-2 0v6a1 1 0 102 0V8z" clip-rule="evenodd"/></svg>
+    <span>VAT</span>
+  </button>
+  <button class="nav-btn" onclick="show('settings')">
+    <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd"/></svg>
+    <span>Settings</span>
+  </button>
+  <div class="topNav-spacer"></div>
+  <span id="userBadge">Admin</span>
+  <button class="nav-btn" onclick="doLogout()" style="color:#fc8181">
+    <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 3a1 1 0 00-1 1v12a1 1 0 102 0V4a1 1 0 00-1-1zm10.293 9.293a1 1 0 001.414 1.414l3-3a1 1 0 000-1.414l-3-3a1 1 0 10-1.414 1.414L14.586 9H7a1 1 0 100 2h7.586l-1.293 1.293z" clip-rule="evenodd"/></svg>
+  </button>
+</nav>
+
+<!-- BREADCRUMB -->
+<div class="bc">
+  <svg viewBox="0 0 20 20" fill="currentColor" style="color:var(--gold)"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"/></svg>
+  <span id="bcLabel">Home</span>
+</div>
+
+<!-- HOME -->
+<div class="page" id="pg-home">
+  <!-- Company Bar -->
+  <div class="dash-top">
+    <div class="dash-company">
+      <div>
+        <div class="dash-company-name" id="kpi-comp-name">Arabic Hisab</div>
+        <div class="dash-company-sub">ZATCA Compliant Accounting System · Kingdom of Saudi Arabia</div>
+      </div>
+      <div class="dash-date">
+        <b id="kpi-date">—</b>
+        <span id="kpi-time">—</span>
+      </div>
+    </div>
+    <!-- KPI Row -->
+    <div class="kpi-row">
+      <div class="kpi kpi-sales">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+        <label>Today's Sales</label>
+        <div class="kpi-val" id="kpi-today-sales">—</div>
+        <div class="kpi-sub" id="kpi-today-count">— invoices today</div>
+      </div>
+      <div class="kpi kpi-purchase">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/></svg>
+        <label>Total Invoices</label>
+        <div class="kpi-val" id="kpi-total-inv">—</div>
+        <div class="kpi-sub" id="kpi-total-amt">Total SAR —</div>
+      </div>
+      <div class="kpi kpi-vat">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+        <label>VAT Collected</label>
+        <div class="kpi-val" id="kpi-vat-total">—</div>
+        <div class="kpi-sub">15% ZATCA VAT</div>
+      </div>
+      <div class="kpi kpi-clients">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+        <label>Clients</label>
+        <div class="kpi-val" id="kpi-clients-count">—</div>
+        <div class="kpi-sub" id="kpi-items-count">— items registered</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Menu Grid -->
+  <div class="menu-section-title">Modules — الوحدات</div>
+  <div class="tilesGrid">
+    <div class="tile tile-sales" onclick="show('sales')">
+      <div class="tile-icon"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 000 4h6a2 2 0 000-4M9 5a2 2 0 012-2h2a2 2 0 012 2M12 12h3M12 16h3M9 12h.01M9 16h.01"/></svg></div>
+      <div class="tile-text"><h3>Sales Invoice</h3><p>فاتورة ضريبية مبسطة</p></div>
+    </div>
+    <div class="tile tile-purchases" onclick="show('purchases')">
+      <div class="tile-icon"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg></div>
+      <div class="tile-text"><h3>Purchase Invoice</h3><p>فاتورة شراء</p></div>
+    </div>
+    <div class="tile tile-items" onclick="show('items')">
+      <div class="tile-icon"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg></div>
+      <div class="tile-text"><h3>Items / Products</h3><p>الأصناف والمنتجات</p></div>
+    </div>
+    <div class="tile tile-clients" onclick="show('clients')">
+      <div class="tile-icon"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2M9 11a4 4 0 100-8 4 4 0 000 8zM23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg></div>
+      <div class="tile-text"><h3>Clients & Suppliers</h3><p>العملاء والموردون</p></div>
+    </div>
+    <div class="tile tile-vat" onclick="show('vat')">
+      <div class="tile-icon"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div>
+      <div class="tile-text"><h3>VAT Report <span class="vat-badge">15%</span></h3><p>تقرير الضريبة المضافة</p></div>
+    </div>
+    <div class="tile tile-daily" onclick="show('dailyinv')">
+      <div class="tile-icon"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></div>
+      <div class="tile-text"><h3>Daily Invoices</h3><p>الفواتير اليومية</p></div>
+    </div>
+    <div class="tile tile-salesman" onclick="show('salesman')">
+      <div class="tile-icon"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2M12 11a4 4 0 100-8 4 4 0 000 8z"/></svg></div>
+      <div class="tile-text"><h3>Salesman</h3><p>مندوب المبيعات</p></div>
+    </div>
+    <div class="tile tile-groups" onclick="show('servicegroups')">
+      <div class="tile-icon"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M3 7a2 2 0 012-2h14a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2V7zM8 7v10M3 12h18"/></svg></div>
+      <div class="tile-text"><h3>Service Groups</h3><p>مجموعات الخدمات</p></div>
+    </div>
+    <div class="tile tile-creditors" onclick="show('clientreport')">
+      <div class="tile-icon"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg></div>
+      <div class="tile-text"><h3>Client Account</h3><p>كشف حساب العميل</p></div>
+    </div>
+    <div class="tile tile-reports" onclick="show('addusers')">
+      <div class="tile-icon"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg></div>
+      <div class="tile-text"><h3>Add Users</h3><p>إضافة مستخدمين</p></div>
+    </div>
+    <div class="tile tile-settings" onclick="show('settings')">
+      <div class="tile-icon"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06-.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg></div>
+      <div class="tile-text"><h3>Settings</h3><p>الإعدادات</p></div>
+    </div>
+    <div class="tile tile-logout" onclick="doLogout()">
+      <div class="tile-icon"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/></svg></div>
+      <div class="tile-text"><h3>Logout</h3><p>تسجيل الخروج</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- SALES -->
+<div class="page" id="pg-sales">
+  <div class="card">
+    <div class="card-head">
+      <svg viewBox="0 0 20 20" fill="currentColor"><path d="M3 1a1 1 0 000 2h1.22l.305 1.222a.997.997 0 00.01.042l1.358 5.43-.893.892C3.74 11.846 4.632 14 6.414 14H15a1 1 0 000-2H6.414l1-1H14a1 1 0 00.894-.553l3-6A1 1 0 0017 3H6.28l-.31-1.243A1 1 0 005 1H3z"/></svg>
+      <h3>Sales Invoice / فاتورة مبيعات</h3>
+    </div>
+    <div class="card-body">
+      <div class="tabs">
+        <button class="tab on" onclick="stab('s','new',this)">New Invoice</button>
+        <button class="tab" onclick="stab('s','search',this)">Search</button>
+      </div>
+      <div id="s-new" class="tab-content on">
+        <div class="frow frow-4">
+          <div><label>Invoice No</label><input id="s-no" readonly></div>
+          <div><label>Date</label><input id="s-date" type="date"></div>
+          <div><label>Client</label><select id="s-client" onchange="onClientSel()"></select></div>
+          <div><label>Payment</label><select id="s-ptype"><option value="cash">Cash</option><option value="credit">Credit</option><option value="bank">Bank Transfer</option></select></div>
+        </div>
+        <div class="frow frow-4">
+          <div><label>Group</label><select id="s-grp" onchange="filterItems('s')"></select></div>
+          <div><label>Item</label><select id="s-item" onchange="onItemSel('s')"></select></div>
+          <div><label>Unit</label><select id="s-unit"><option value="PCS">PCS</option><option value="PCE">PCE</option><option value="SET">SET</option><option value="M">M</option><option value="M²">M²</option><option value="KG">KG</option><option value="L">L</option><option value="BOX">BOX</option><option value="RLL">RLL</option><option value="NOS">NOS</option></select></div>
+          <div><label>Qty</label><input id="s-qty" type="number" value="1" min="1" onchange="calcRow('s')"></div>
+          <div><label>Price</label><input id="s-price" type="number" value="0" onchange="calcRow('s')"></div>
+        </div>
+        <div class="frow frow-4">
+          <div><label>Row Total</label><input id="s-rowtot" readonly></div>
+          <div><label>Client Balance</label><input id="s-cbal" readonly></div>
+          <div><label>Notes</label><input id="s-notes"></div>
+          <div style="display:flex;align-items:flex-end;gap:8px">
+            <button class="btn btn-primary" onclick="addRow('s')">
+              <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd"/></svg>
+              Add
+            </button>
+            <button class="btn btn-secondary" onclick="delLastRow('s')">Del</button>
+          </div>
+        </div>
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr><th>#</th><th>Description</th><th>Unit</th><th>Qty</th><th style="text-align:right">U.Price</th><th style="text-align:right">Total</th><th></th></tr></thead>
+            <tbody id="s-tbody"></tbody>
+          </table>
+        </div>
+        <div class="total-bar">
+          <div class="ti"><label>Subtotal</label><span id="s-sub">0.00</span></div>
+          <div class="ti"><label>VAT 15%</label><span id="s-vat" style="color:#fc8181">0.00</span></div>
+          <div class="ti ti-total"><label>TOTAL</label><span id="s-total">0.00</span></div>
+          <div class="ti"><label>Paid</label><input id="s-paid" type="number" value="0" onchange="calcChg()" style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:#fff;width:100px;text-align:center;border-radius:6px;padding:6px"></div>
+          <div class="ti"><label>Change</label><input id="s-chg" readonly style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:#fbbf24;width:100px;text-align:center;border-radius:6px;padding:6px"></div>
+        </div>
+        <div class="btn-group">
+          <button class="btn btn-primary" onclick="saveSalesInv()">
+            <svg viewBox="0 0 20 20" fill="currentColor"><path d="M7.707 10.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V6h5a2 2 0 012 2v7a2 2 0 01-2 2H4a2 2 0 01-2-2V8a2 2 0 012-2h5v5.586l-1.293-1.293z"/></svg>
+            Save & Print
+          </button>
+          <button class="btn btn-info" onclick="previewSales()">
+            <svg viewBox="0 0 20 20" fill="currentColor"><path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/><path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10z" clip-rule="evenodd"/></svg>
+            Preview
+          </button>
+          <button class="btn btn-secondary" onclick="newSalesInv()">New Invoice</button>
+          <button class="btn btn-danger" onclick="resetData()">Reset Data</button>
+        </div>
+      </div>
+      <div id="s-search" class="tab-content">
+        <div class="frow frow-4">
+          <div><label>Invoice No</label><input id="ss-no" placeholder="Search..."></div>
+          <div><label>Client</label><input id="ss-cl" placeholder="Client name..."></div>
+          <div><label>From</label><input id="ss-from" type="date"></div>
+          <div><label>To</label><input id="ss-to" type="date"></div>
+        </div>
+        <button class="btn btn-primary" onclick="searchInvs()">
+          <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"/></svg>
+          Search
+        </button>
+        <div class="tbl-wrap" style="margin-top:14px">
+          <table>
+            <thead><tr><th>Invoice No</th><th>Date</th><th>Client</th><th>Total</th><th>Payment</th><th></th></tr></thead>
+            <tbody id="ss-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PURCHASES -->
+<div class="page" id="pg-purchases">
+  <div class="card">
+    <div class="card-head">
+      <svg viewBox="0 0 20 20" fill="currentColor"><path d="M4 3a2 2 0 100 4h12a2 2 0 100-4H4z"/><path fill-rule="evenodd" d="M3 8h14v7a2 2 0 01-2 2H5a2 2 0 01-2-2V8z" clip-rule="evenodd"/></svg>
+      <h3>Purchase Invoice / فاتورة شراء</h3>
+    </div>
+    <div class="card-body">
+      <div class="frow frow-4">
+        <div><label>Purchase No</label><input id="p-no" readonly></div>
+        <div><label>Date</label><input id="p-date" type="date"></div>
+        <div><label>Supplier</label><select id="p-sup"></select></div>
+        <div><label>Payment</label><select id="p-ptype"><option value="cash">Cash</option><option value="credit">Credit</option><option value="bank">Bank Transfer</option></select></div>
+      </div>
+      <div class="frow frow-4">
+        <div><label>Group</label><select id="p-grp" onchange="filterItems('p')"></select></div>
+        <div><label>Item</label><select id="p-item" onchange="onItemSel('p')"></select></div>
+        <div><label>Unit</label><select id="p-unit"><option value="PCS">PCS</option><option value="PCE">PCE</option><option value="SET">SET</option><option value="M">M</option><option value="M²">M²</option><option value="KG">KG</option><option value="L">L</option><option value="BOX">BOX</option><option value="RLL">RLL</option><option value="NOS">NOS</option></select></div>
+        <div><label>Qty</label><input id="p-qty" type="number" value="1" min="1" onchange="calcRow('p')"></div>
+        <div><label>Price</label><input id="p-price" type="number" value="0" onchange="calcRow('p')"></div>
+      </div>
+      <div class="frow frow-3">
+        <div><label>Row Total</label><input id="p-rowtot" readonly></div>
+        <div><label>Notes</label><input id="p-notes"></div>
+        <div style="display:flex;align-items:flex-end;gap:8px">
+          <button class="btn btn-primary" onclick="addRow('p')">
+            <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd"/></svg>
+            Add
+          </button>
+          <button class="btn btn-secondary" onclick="delLastRow('p')">Del</button>
+        </div>
+      </div>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>#</th><th>Description</th><th>Unit</th><th>Qty</th><th style="text-align:right">U.Price</th><th style="text-align:right">Total</th><th></th></tr></thead>
+          <tbody id="p-tbody"></tbody>
+        </table>
+      </div>
+      <div class="total-bar">
+        <div class="ti"><label>Subtotal</label><span id="p-sub">0.00</span></div>
+        <div class="ti"><label>VAT 15%</label><span id="p-vat" style="color:#fc8181">0.00</span></div>
+        <div class="ti"><label>TOTAL</label><span id="p-total" style="font-size:22px">0.00</span></div>
+      </div>
+      <div class="btn-group">
+        <button class="btn btn-primary" onclick="savePurInv()">
+          <svg viewBox="0 0 20 20" fill="currentColor"><path d="M7.707 10.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V6h5a2 2 0 012 2v7a2 2 0 01-2 2H4a2 2 0 01-2-2V8a2 2 0 012-2h5v5.586l-1.293-1.293z"/></svg>
+          Save & Print
+        </button>
+        <button class="btn btn-info" onclick="previewPur()">Preview</button>
+        <button class="btn btn-secondary" onclick="newPurInv()">New Purchase</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ITEMS -->
+<div class="page" id="pg-items">
+  <div class="card">
+    <div class="card-head">
+      <svg viewBox="0 0 20 20" fill="currentColor"><path d="M11 17a1 1 0 001.447.894l4-2A1 1 0 0017 15V9.236a1 1 0 00-1.447-.894l-4 2a1 1 0 00-.553.894V17zM15.211 6.276a1 1 0 000-1.788l-4.764-2.382a1 1 0 00-.894 0L4.789 4.488a1 1 0 000 1.788l4.764 2.382a1 1 0 00.894 0l4.764-2.382zM4.447 8.342A1 1 0 003 9.236V15a1 1 0 00.553.894l4 2A1 1 0 009 17v-5.764a1 1 0 00-.553-.894l-4-2z"/></svg>
+      <h3>Items / الأصناف</h3>
+    </div>
+    <div class="card-body">
+      <div class="tabs">
+        <button class="tab on" onclick="stab('it','form',this)">Item Form</button>
+        <button class="tab" onclick="stab('it','list',this);renderItems()">Items List</button>
+      </div>
+      <div id="it-form" class="tab-content on">
+        <div class="frow frow-4">
+          <div><label>Item No</label><input id="it-no" placeholder="NEW"></div>
+          <div><label>Name (EN)</label><input id="it-nen" placeholder="Item name..."></div>
+          <div><label>Name (AR)</label><input id="it-nar" placeholder="اسم الصنف" style="direction:rtl"></div>
+          <div><label>Barcode</label><input id="it-bc"></div>
+        </div>
+        <div class="frow frow-4">
+          <div><label>Buy Price</label><input id="it-buy" type="number" value="0"></div>
+          <div><label>Sale Price</label><input id="it-sale" type="number" value="0"></div>
+          <div><label>Unit</label><select id="it-unit"><option>PCS</option><option>SQM</option><option>MTR</option><option>KG</option><option>LTR</option><option>SET</option></select></div>
+          <div><label>Group</label><select id="it-grp"></select></div>
+        </div>
+        <div class="btn-group">
+          <button class="btn btn-primary" onclick="saveItem()">Save Item</button>
+          <button class="btn btn-secondary" onclick="clearItem()">New Item</button>
+          <button class="btn btn-danger" onclick="delItem()">Delete</button>
+        </div>
+      </div>
+      <div id="it-list" class="tab-content">
+        <div style="margin-bottom:12px"><input id="it-srch" placeholder="Search items..." oninput="renderItems()" style="max-width:300px"></div>
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr><th>ID</th><th>Name EN</th><th>Name AR</th><th>Buy</th><th>Sale</th><th>Unit</th></tr></thead>
+            <tbody id="it-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CLIENTS -->
+<div class="page" id="pg-clients">
+  <div class="card">
+    <div class="card-head">
+      <svg viewBox="0 0 20 20" fill="currentColor"><path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"/></svg>
+      <h3>Clients & Suppliers / العملاء والموردون</h3>
+    </div>
+    <div class="card-body">
+      <div class="tabs">
+        <button class="tab on" onclick="stab('cs','data',this)" id="cs-tab-data">Form</button>
+        <button class="tab" onclick="csT='client';var e=document.getElementById('cs-type');if(e)e.value='client';renderCSList();stab('cs','list',this)">Clients</button>
+        <button class="tab" onclick="csT='supplier';var e=document.getElementById('cs-type');if(e)e.value='supplier';renderCSList();stab('cs','list',this)">Suppliers</button>
+      </div>
+      <div id="cs-data" class="tab-content on">
+        <div class="frow frow-4">
+          <div><label>Account ID</label><input id="cs-acct" placeholder="Auto"></div>
+          <div><label>Name</label><input id="cs-name"></div>
+          <div><label>Type</label><select id="cs-type" onchange="csT=this.value"><option value="client">Client</option><option value="supplier">Supplier</option></select></div>
+          <div><label>Mobile</label><input id="cs-mob"></div>
+        </div>
+        <div class="frow frow-4">
+          <div><label>Tax No</label><input id="cs-taxno"></div>
+          <div><label>City</label><input id="cs-city"></div>
+          <div><label>Opening Balance</label><input id="cs-ob" type="number" value="0"></div>
+          <div><label>Notes</label><input id="cs-notes"></div>
+          <div style="display:flex;align-items:flex-end;gap:6px">
+            <button class="btn btn-primary" onclick="saveCS()">Save</button>
+            <button class="btn btn-danger" onclick="delCS()">Del</button>
+            <button class="btn btn-secondary" onclick="clearCS()">New</button>
+          </div>
+        </div>
+      </div>
+      <div id="cs-list" class="tab-content">
+        <div style="margin-bottom:12px"><input id="cs-q" placeholder="Search..." oninput="renderCSList()" style="max-width:300px"></div>
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr><th>ID</th><th>Name</th><th>Mobile</th><th>Tax No</th><th>Balance</th></tr></thead>
+            <tbody id="cs-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- VAT -->
+<div class="page" id="pg-vat">
+  <div class="card">
+    <div class="card-head">
+      <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm2 10a1 1 0 10-2 0v3a1 1 0 102 0v-3zm2-3a1 1 0 011 1v5a1 1 0 11-2 0v-5a1 1 0 011-1zm4-1a1 1 0 10-2 0v6a1 1 0 102 0V8z" clip-rule="evenodd"/></svg>
+      <h3>VAT Report / تقرير ضريبة القيمة المضافة</h3>
+    </div>
+    <div class="card-body">
+      <div class="frow frow-4" style="margin-bottom:16px">
+        <div><label>VAT Number</label><input id="v-vatno" readonly></div>
+        <div><label>From</label><input id="vf" type="date" onchange="calcVAT()"></div>
+        <div><label>To</label><input id="vt" type="date" onchange="calcVAT()"></div>
+        <div style="display:flex;align-items:flex-end">
+          <button class="btn btn-primary" onclick="printVAT()">Print VAT Report</button>
+        </div>
+      </div>
+      <div class="vat-grid">
+        <div class="vat-box vat-box-sales">
+          <h4 style="color:#276749">Sales / المبيعات</h4>
+          <div style="display:grid;gap:8px">
+            <div><label>Total Sales (excl. VAT)</label><input id="v-ts" readonly></div>
+            <div><label>VAT Collected (15%)</label><input id="v-sv" readonly style="color:#c53030;font-weight:bold"></div>
+          </div>
+        </div>
+        <div class="vat-box vat-box-purch">
+          <h4 style="color:#b7791f">Purchases / المشتريات</h4>
+          <div style="display:grid;gap:8px">
+            <div><label>Total Purchases (excl. VAT)</label><input id="v-tp" readonly></div>
+            <div><label>VAT Input (15%)</label><input id="v-pv" readonly style="color:#c53030;font-weight:bold"></div>
+          </div>
+        </div>
+      </div>
+      <div class="vat-total">
+        <label>Payable VAT / الضريبة المستحقة</label>
+        <span id="v-pay">0.00 SAR</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- DAILY INVOICES -->
+<div class="page" id="pg-dailyinv">
+  <div class="card">
+    <div class="card-head">
+      <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"/></svg>
+      <h3>Daily Invoices / الفواتير اليومية</h3>
+    </div>
+    <div class="card-body">
+      <div style="display:flex;gap:12px;align-items:flex-end;margin-bottom:16px">
+        <div><label>Date</label><input id="di-date" type="date" onchange="loadDaily()"></div>
+        <button class="btn btn-primary" onclick="loadDaily()">Load</button>
+      </div>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>No</th><th>Type</th><th>Name</th><th>Total</th><th>Payment</th><th></th></tr></thead>
+          <tbody id="di-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SALESMAN -->
+<div class="page" id="pg-salesman">
+  <div class="card">
+    <div class="card-head">
+      <svg viewBox="0 0 20 20" fill="currentColor"><path d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"/></svg>
+      <h3>Salesman / مندوب المبيعات</h3>
+    </div>
+    <div class="card-body">
+      <div style="display:flex;gap:10px;margin-bottom:16px;align-items:flex-end">
+        <div style="flex:1"><label>Salesman Name</label><input id="sm-name" placeholder="Enter name..."></div>
+        <button class="btn btn-primary" onclick="addSM()">Add Salesman</button>
+      </div>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>ID</th><th>Name</th><th></th></tr></thead>
+          <tbody id="sm-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SETTINGS -->
+<div class="page" id="pg-settings">
+  <div class="card">
+    <div class="card-head">
+      <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd"/></svg>
+      <h3>Company Settings / إعدادات الشركة</h3>
+    </div>
+    <div class="card-body">
+      <div class="tabs">
+        <button class="tab on" onclick="stab('stt','info',this)">Company Info</button>
+        <button class="tab" onclick="stab('stt','groups',this)">Groups</button>
+        <button class="tab admin-only-tab" id="tab-users" onclick="stab('stt','users',this);renderUsersPanel()">👥 Users</button>
+      </div>
+      <div id="stt-info" class="tab-content on">
+        <div class="frow frow-2">
+          <div><label>Company Name (EN)</label><input id="set-en"></div>
+          <div><label>Company Name (AR)</label><input id="set-ar" style="direction:rtl"></div>
+        </div>
+        <div class="frow frow-3">
+          <div><label>VAT Number</label><input id="set-vn"></div>
+          <div><label>CR Number</label><input id="set-cr"></div>
+          <div><label>Mobile</label><input id="set-mob"></div>
+        </div>
+        <div class="frow frow-2">
+          <div><label>Address</label><input id="set-addr"></div>
+          <div><label>Email</label><input id="set-email" type="email"></div>
+        </div>
+        <div class="frow frow-3">
+          <div><label>Invoice Prefix</label><input id="set-pfx"></div>
+          <div><label>Starting Invoice No</label><input id="set-sino" type="number"></div>
+          <div><label>Terms / الشروط</label><input id="set-terms"></div>
+        </div>
+        <div class="btn-group">
+          <button class="btn btn-primary" onclick="saveSettings()">Save Settings</button>
+        </div>
+      </div>
+      <div id="stt-groups" class="tab-content">
+        <div style="display:flex;gap:10px;margin-bottom:16px;align-items:flex-end">
+          <div style="flex:1"><label>Group Name</label><input id="ng-inp" placeholder="New group name..."></div>
+          <button class="btn btn-primary" onclick="addGroup()">Add Group</button>
+        </div>
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr><th>#</th><th>Group Name</th><th></th></tr></thead>
+            <tbody id="grp-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+      <!-- USERS TAB (admin only) -->
+      <div id="stt-users" class="tab-content">
+        <div style="margin-bottom:20px;padding:14px;background:rgba(240,165,0,0.07);border:1px solid rgba(240,165,0,0.2);border-radius:10px">
+          <h4 style="color:var(--gold2);margin-bottom:12px;font-size:14px">🔑 Change Admin Password</h4>
+          <div class="frow frow-3">
+            <div><label>Current Password</label><input type="password" id="ap-old" placeholder="Current password"></div>
+            <div><label>New Password</label><input type="password" id="ap-new" placeholder="New password (min 4 chars)"></div>
+            <div style="display:flex;align-items:flex-end"><button class="btn btn-primary" onclick="changeAdminPass()">Change</button></div>
+          </div>
+          <div id="ap-msg" style="font-size:12px;min-height:16px;margin-top:6px"></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+          <h4 style="color:var(--gold2);font-size:14px">📋 Registered Users</h4>
+          <button class="btn btn-secondary" onclick="renderUsersPanel()" style="font-size:12px;padding:5px 12px">🔄 Refresh</button>
+        </div>
+        <div class="tbl-wrap">
+          <table class="users-tbl">
+            <thead><tr><th>#</th><th>Email</th><th>Password</th><th>Status</th><th>Expiry</th><th>Actions</th></tr></thead>
+            <tbody id="users-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PLACEHOLDER PAGES -->
+<div class="page" id="pg-servicegroups">
+  <div class="card"><div class="card-head"><svg viewBox="0 0 20 20" fill="currentColor"><path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"/></svg><h3>Service Groups</h3></div>
+  <div class="card-body" style="padding:40px;text-align:center;color:var(--muted)"><p>Service Groups — Use Settings → Groups tab</p><button class="btn btn-secondary" style="margin-top:12px" onclick="show('settings')">Go to Settings</button></div></div>
+</div>
+<div class="page" id="pg-clientreport">
+  <div class="card"><div class="card-head"><svg viewBox="0 0 20 20" fill="currentColor"><path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"/><path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z" clip-rule="evenodd"/></svg><h3>Client Account Report</h3></div>
+  <div class="card-body" style="padding:40px;text-align:center;color:var(--muted)"><p>Client Account Report — Coming Soon</p></div></div>
+</div>
+<div class="page" id="pg-addusers">
+  <div class="card"><div class="card-head"><svg viewBox="0 0 20 20" fill="currentColor"><path d="M8 9a3 3 0 100-6 3 3 0 000 6zM8 11a6 6 0 016 6H2a6 6 0 016-6zM16 7a1 1 0 10-2 0v1h-1a1 1 0 100 2h1v1a1 1 0 102 0v-1h1a1 1 0 100-2h-1V7z"/></svg><h3>Add Users</h3></div>
+  <div class="card-body" style="padding:40px;text-align:center;color:var(--muted)"><p>User management — use Gmail login to add accounts</p></div></div>
+</div>
+
+</div><!-- /appPage -->
+
+<!-- PREVIEW MODAL -->
+<div id="prevModal">
+  <div class="modal-inner">
+    <div class="modal-head">
+      <span>🧾 Invoice Preview / معاينة الفاتورة</span>
+      <div class="modal-head-btns">
+        <button class="modal-print-btn" onclick="printInvWindow()">🖨️ Print / PDF</button>
+        <button class="modal-close" onclick="document.getElementById('prevModal').style.display='none'">✕</button>
+      </div>
+    </div>
+    <div id="prevContent"></div>
+  </div>
+</div>
+
+<script>
+// ===== MULTI-ACCOUNT DATA =====
+var curUser = 'admin';
+var DB = getDefaultDB();
+
+function getDefaultDB() {
+  return {
+    s: {
+      compEn: 'North Day Foundation For General Contracting Est.',
+      compAr: 'مؤسسة نهار الشمال للمقاولات العامة',
+      vatNo: '311522722100003', cr: '1010883261',
+      addr: 'Riyadh - Saudi Arabia', mob: '0597953465',
+      email: 'shopname@gmail.com',
+      terms: 'شكراً لتعاملكم معنا — Thank you for your business',
+      pfx: 'INV', sino: 381
+    },
+    groups: ['General'],
+    items: [
+      {id:1, nen:'Services', nar:'سرفيثس', bc:'001', grp:'General', buy:0, sale:0, unit:'PCS'},
+      {id:2, nen:'DUCT', nar:'دثت', bc:'002', grp:'General', buy:0, sale:0, unit:'PCS'},
+      {id:4, nen:'Duct Supply & Installation', nar:'دثت سببلي ينستاللاتيون', bc:'4', grp:'General', buy:120, sale:120, unit:'SQM'},
+      {id:5, nen:'SUPPLY AND INSTALLATION FIBER GLASS', nar:'سببلي اند فيبر جلاص', bc:'5', grp:'General', buy:30, sale:30, unit:'SQM'},
+      {id:6, nen:'DUCT Installation', nar:'دثت ينستاللاتيون', bc:'6', grp:'General', buy:1, sale:1, unit:'PCS'},
+      {id:7, nen:'GRILL', nar:'جريلل', bc:'7', grp:'General', buy:20, sale:20, unit:'PCS'},
+      {id:8, nen:'ALUMINIUM CLADDING', nar:'الميننننمي ثلاضينج', bc:'8', grp:'General', buy:120, sale:120, unit:'SQM'},
+      {id:9, nen:'RUND VCD SUPPLY AND INSTALL', nar:'رند ف ث د سببلي', bc:'9', grp:'General', buy:100, sale:100, unit:'PCS'},
+      {id:10, nen:'FLEXIBLE DUCT CONNECTED', nar:'فلكسيبل دثت', bc:'10', grp:'General', buy:50, sale:50, unit:'MTR'},
+      {id:11, nen:'FLEXIBLE SUPPLY AND INSTALL', nar:'فلكسيبل سببلي', bc:'11', grp:'General', buy:40, sale:40, unit:'MTR'},
+      {id:12, nen:'F C U INSTALL', nar:'ف ث ينستالل', bc:'12', grp:'General', buy:400, sale:400, unit:'PCS'},
+      {id:13, nen:'COPPER PIPE SUPPLY AND INSTALL', nar:'ثوببر بيب', bc:'13', grp:'General', buy:80, sale:80, unit:'PCS'},
+      {id:14, nen:'LINER BOX SUPPLY AND INSTALL', nar:'لينير بوكس', bc:'14', grp:'General', buy:130, sale:130, unit:'PCS'}
+    ],
+    clients: [
+      {id:'1230001', name:'General Customers', type:'client', mob:'', taxno:'', ob:0, city:''},
+      {id:'1230002', name:'XYZ', type:'client', mob:'0507138351', taxno:'000000000000000', ob:0, city:'Riyadh'},
+      {id:'1230003', name:'fahad', type:'client', mob:'0597953465', taxno:'311522722100003', ob:0, city:'Riyadh'},
+      {id:'1230004', name:'YOUSSEF MARROUN CONTRACTING CO', type:'client', mob:'597953465', taxno:'302207429500003', ob:0, city:''},
+      {id:'1230006', name:'Mahar Alfan Est.', type:'client', mob:'0542285852', taxno:'302207429500003', ob:0, city:''}
+    ],
+    suppliers: [
+      {id:'2610001', name:'MOHAMMED SAUD ATEEQ AL-MUTAIRI', type:'supplier', mob:'1010613446', taxno:'311282020700003', ob:0, city:''},
+      {id:'2610002', name:'AI Watan Refrigeratrion', type:'supplier', mob:'0550504061', taxno:'311282020700003', ob:0, city:''},
+      {id:'2610003', name:'ALFAJR COOLING', type:'supplier', mob:'1010225864', taxno:'310791619300003', ob:0, city:''},
+      {id:'2610004', name:'Rabua Al Jiyaal Treding Co.', type:'supplier', mob:'1010613445', taxno:'311522722100003', ob:0, city:''},
+      {id:'2610006', name:'Ali Mohammed Almusairiey Co.', type:'supplier', mob:'0597953465', taxno:'311282020700003', ob:0, city:''},
+      {id:'2610007', name:'Hanan Future Treding Co.', type:'supplier', mob:'0551928986', taxno:'311522722100003', ob:0, city:''}
+    ],
+    salesmen: [], invoices: [], purchases: [],
+    nInv: 381, nPur: 1, nItem: 35, nClient: 1230007
+  };
+}
+
+function dbKey(user) { return 'ah_db_' + user; }
+
+function loadDB(user) {
+  try {
+    var x = localStorage.getItem(dbKey(user));
+    if (x) {
+      var d = JSON.parse(x);
+      var def = getDefaultDB();
+      if (d.s) def.s = d.s;
+      if (d.items && d.items.length) def.items = d.items;
+      if (d.clients && d.clients.length) def.clients = d.clients;
+      if (d.suppliers && d.suppliers.length) def.suppliers = d.suppliers;
+      if (d.salesmen) def.salesmen = d.salesmen;
+      if (d.invoices) def.invoices = d.invoices;
+      if (d.purchases) def.purchases = d.purchases;
+      if (d.groups && d.groups.length) def.groups = d.groups;
+      if (d.nInv) def.nInv = d.nInv;
+      if (d.nPur) def.nPur = d.nPur;
+      if (d.nItem) def.nItem = d.nItem;
+      if (d.nClient) def.nClient = d.nClient;
+      return def;
+    }
+  } catch(e) {}
+  return getDefaultDB();
+}
+
+function saveDB() {
+  try { localStorage.setItem(dbKey(curUser), JSON.stringify(DB)); } catch(e) {}
+}
+
+function getSavedAccounts() {
+  try {
+    var a = localStorage.getItem('ah_accounts');
+    return a ? JSON.parse(a) : ['admin'];
+  } catch(e) { return ['admin']; }
+}
+
+function addAccount(email) {
+  var list = getSavedAccounts();
+  if (list.indexOf(email) < 0) list.push(email);
+  try { localStorage.setItem('ah_accounts', JSON.stringify(list)); } catch(e) {}
+}
+
+function removeAccount(email) {
+  var list = getSavedAccounts().filter(function(a) { return a !== email; });
+  try { localStorage.setItem('ah_accounts', JSON.stringify(list)); } catch(e) {}
+  try { localStorage.removeItem(dbKey(email)); } catch(e) {}
+}
+
+/* ═══════════════════════════════════
+   AUTH SYSTEM v2 — Email+Password
+═══════════════════════════════════ */
+var ADMIN_KEY = 'ah_admin_v2';
+var USERS_KEY = 'ah_users_v2';
+
+function getAdminCreds() {
+  try { var x = localStorage.getItem(ADMIN_KEY); return x ? JSON.parse(x) : {username:'admin',password:'Admin@1234'}; }
+  catch(e) { return {username:'admin',password:'Admin@1234'}; }
+}
+function saveAdminCreds(d) {
+  try { localStorage.setItem(ADMIN_KEY, JSON.stringify(d)); } catch(e) {}
+}
+function getUsers() {
+  try { var x = localStorage.getItem(USERS_KEY); return x ? JSON.parse(x) : {}; }
+  catch(e) { return {}; }
+}
+function saveUsers(u) {
+  try { localStorage.setItem(USERS_KEY, JSON.stringify(u)); } catch(e) {}
+}
+
+function setLTab(tab) {
+  document.getElementById('l-user').style.display = tab === 'user' ? 'block' : 'none';
+  document.getElementById('l-admin').style.display = tab === 'admin' ? 'block' : 'none';
+  document.getElementById('ltab-user').className = 'l-tab' + (tab === 'user' ? ' l-tab-on' : '');
+  document.getElementById('ltab-admin').className = 'l-tab' + (tab === 'admin' ? ' l-tab-on' : '');
+}
+
+function userLogin() {
+  var em = document.getElementById('lu-email').value.trim().toLowerCase();
+  var pw = document.getElementById('lu-pass').value;
+  var err = document.getElementById('lerr');
+  err.textContent = '';
+  if (!em || em.indexOf('@') < 0) { err.textContent = '✗ Gmail address দাও (name@gmail.com)'; return; }
+  if (!pw) { err.textContent = '✗ Password দাও'; return; }
+  var users = getUsers();
+  if (users[em]) {
+    if (users[em].password !== pw) { err.textContent = '✗ Password ভুল হয়েছে'; return; }
+    if (!users[em].enabled) { err.textContent = '✗ Account disabled। Admin এর সাথে যোগাযোগ করুন'; return; }
+    if (users[em].expiry && new Date(users[em].expiry) < new Date()) { err.textContent = '✗ Account মেয়াদ শেষ (' + users[em].expiry + ')'; return; }
+  } else {
+    users[em] = { password: pw, enabled: true, expiry: null, createdAt: new Date().toISOString().slice(0,10) };
+    saveUsers(users);
+  }
+  doLogin(em, false);
+}
+
+function adminLogin() {
+  var un = document.getElementById('la-user').value.trim();
+  var pw = document.getElementById('la-pass').value;
+  var err = document.getElementById('la-err');
+  err.textContent = '';
+  if (!un) { err.textContent = '✗ Username দাও'; return; }
+  if (!pw) { err.textContent = '✗ Password দাও'; return; }
+  var creds = getAdminCreds();
+  if (un !== creds.username || pw !== creds.password) { err.textContent = '✗ Username বা Password ভুল'; return; }
+  doLogin('admin', true);
+}
+
+function doLogin(user, isAdmin) {
+  curUser = user;
+  DB = loadDB(user);
+  addAccount(user);
+  var isAdm = isAdmin || user === 'admin';
+  document.getElementById('loginPage').style.display = 'none';
+  document.getElementById('appPage').style.display = 'block';
+  var badge = document.getElementById('userBadge');
+  badge.textContent = isAdm ? '👤 Admin' : ('📧 ' + user.split('@')[0]);
+  badge.title = user;
+  var adminEls = document.querySelectorAll('.admin-only-tab');
+  for (var i = 0; i < adminEls.length; i++) adminEls[i].style.display = isAdm ? 'inline-block' : 'none';
+  initApp();
+}
+
+function doLogout() {
+  document.getElementById('loginPage').style.display = 'flex';
+  document.getElementById('appPage').style.display = 'none';
+  document.getElementById('lu-email').value = '';
+  document.getElementById('lu-pass').value = '';
+  document.getElementById('lerr').textContent = '';
+  document.getElementById('la-pass').value = '';
+  document.getElementById('la-err').textContent = '';
+  var adminEls = document.querySelectorAll('.admin-only-tab');
+  for (var i = 0; i < adminEls.length; i++) adminEls[i].style.display = 'none';
+  setLTab('user');
+  renderAccounts();
+}
+
+function renderAccounts() {
+  var list = getSavedAccounts();
+  var al = document.getElementById('acctList');
+  var sa = document.getElementById('savedAccts');
+  if (list.length === 0) { sa.style.display = 'none'; return; }
+  sa.style.display = 'block';
+  al.innerHTML = list.map(function(a) {
+    return '<div class="acct-item">'
+      + '<div onclick="quickLoginAs(\'' + a + '\')" style="flex:1;display:flex;align-items:center;gap:8px;">'
+      + '<div class="acct-dot"></div>'
+      + '<span class="acct-email">' + (a === 'admin' ? '👤 Admin' : a) + '</span>'
+      + '</div>'
+      + '<button onclick="event.stopPropagation();removeAcct(\'' + a + '\')" style="background:rgba(239,68,68,0.2);border:none;color:#fc8181;cursor:pointer;border-radius:4px;padding:3px 8px;font-size:11px;">✕</button>'
+      + '</div>';
+  }).join('');
+}
+
+function quickLoginAs(user) {
+  if (user === 'admin') {
+    setLTab('admin');
+    document.getElementById('la-user').value = 'admin';
+    document.getElementById('la-pass').focus();
+  } else {
+    setLTab('user');
+    document.getElementById('lu-email').value = user;
+    document.getElementById('lu-pass').focus();
+  }
+}
+
+function removeAcct(email) {
+  if (!confirm('Remove from recent: ' + email + '?')) return;
+  removeAccount(email);
+  renderAccounts();
+}
+
+/* ═══════════════════════════════════
+   ADMIN USER MANAGEMENT
+═══════════════════════════════════ */
+function renderUsersPanel() {
+  var users = getUsers();
+  var tb = document.getElementById('users-tbody');
+  if (!tb) return;
+  var emails = Object.keys(users);
+  if (emails.length === 0) {
+    tb.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:20px;color:var(--muted)">No users registered yet</td></tr>';
+    return;
+  }
+  tb.innerHTML = emails.map(function(em, idx) {
+    var u = users[em];
+    var statusHtml = u.enabled ? '<span class="user-status-on">✓ Active</span>' : '<span class="user-status-off">✗ Disabled</span>';
+    var expiry = u.expiry || '—';
+    var expiryColor = (u.expiry && new Date(u.expiry) < new Date()) ? 'color:#fc8181' : 'color:rgba(255,255,255,0.7)';
+    var enc = encodeURIComponent(em);
+    return '<tr>'
+      + '<td style="color:var(--muted)">' + (idx+1) + '</td>'
+      + '<td style="color:#e2e8f0">' + em + '</td>'
+      + '<td><div class="pass-cell"><span class="pass-val" id="pv-' + idx + '">••••••••</span>'
+      + '<button class="pass-eye" onclick="togglePass(' + idx + ',\'' + enc + '\')">👁</button></div></td>'
+      + '<td>' + statusHtml + '</td>'
+      + '<td style="' + expiryColor + '">' + expiry + '</td>'
+      + '<td style="display:flex;gap:5px;flex-wrap:wrap">'
+      + '<button class="btn btn-secondary" style="font-size:11px;padding:4px 8px" onclick="toggleUserEnabled(\'' + enc + '\')">' + (u.enabled ? '🔒 Disable' : '✓ Enable') + '</button>'
+      + '<button class="btn btn-secondary" style="font-size:11px;padding:4px 8px" onclick="setExpiry(\'' + enc + '\')">⏱ Expiry</button>'
+      + '<button class="btn" style="font-size:11px;padding:4px 8px;background:rgba(239,68,68,0.2);color:#fc8181;border:1px solid rgba(239,68,68,0.3);border-radius:6px;cursor:pointer" onclick="deleteUser(\'' + enc + '\')">🗑</button>'
+      + '</td></tr>';
+  }).join('');
+}
+
+function togglePass(idx, emEnc) {
+  var em = decodeURIComponent(emEnc);
+  var el = document.getElementById('pv-' + idx);
+  if (!el) return;
+  if (el.textContent === '••••••••') {
+    var users = getUsers();
+    el.textContent = (users[em] ? users[em].password : '—');
+    el.style.color = 'var(--gold2)';
+  } else {
+    el.textContent = '••••••••';
+    el.style.color = 'rgba(255,255,255,0.5)';
+  }
+}
+
+function toggleUserEnabled(emEnc) {
+  var em = decodeURIComponent(emEnc);
+  var users = getUsers();
+  if (!users[em]) return;
+  users[em].enabled = !users[em].enabled;
+  saveUsers(users);
+  renderUsersPanel();
+}
+
+function setExpiry(emEnc) {
+  var em = decodeURIComponent(emEnc);
+  var users = getUsers();
+  if (!users[em]) return;
+  var val = prompt('Expiry date for:\n' + em + '\n\nFormat: YYYY-MM-DD\n(blank = no limit)', users[em].expiry || '');
+  if (val === null) return;
+  val = val.trim();
+  if (val && !/^\d{4}-\d{2}-\d{2}$/.test(val)) { alert('Invalid format। Use YYYY-MM-DD (e.g. 2027-03-31)'); return; }
+  users[em].expiry = val || null;
+  saveUsers(users);
+  renderUsersPanel();
+}
+
+function deleteUser(emEnc) {
+  var em = decodeURIComponent(emEnc);
+  if (!confirm('Delete user account:\n' + em + '\n\n(Their invoice data will NOT be deleted)')) return;
+  var users = getUsers();
+  delete users[em];
+  saveUsers(users);
+  removeAccount(em);
+  renderUsersPanel();
+}
+
+function changeAdminPass() {
+  var oldP = document.getElementById('ap-old').value;
+  var newP = document.getElementById('ap-new').value;
+  var msg = document.getElementById('ap-msg');
+  var creds = getAdminCreds();
+  if (!oldP || !newP) { msg.style.color = '#fc8181'; msg.textContent = 'দুটো field-ই পূরণ করো'; return; }
+  if (oldP !== creds.password) { msg.style.color = '#fc8181'; msg.textContent = '✗ Current password ভুল'; return; }
+  if (newP.length < 4) { msg.style.color = '#fc8181'; msg.textContent = 'New password কমপক্ষে 4 character লাগবে'; return; }
+  creds.password = newP;
+  saveAdminCreds(creds);
+  document.getElementById('ap-old').value = '';
+  document.getElementById('ap-new').value = '';
+  msg.style.color = '#68d391';
+  msg.textContent = '✓ Admin password সফলভাবে পরিবর্তন হয়েছে';
+  setTimeout(function() { msg.textContent = ''; }, 3500);
+}
+
+function resetData() {
+  if (!confirm('Delete all YOUR data for this account?')) return;
+  localStorage.removeItem(dbKey(curUser));
+  DB = getDefaultDB();
+  saveDB();
+  alert('Data reset!');
+  initApp();
+}
+
+var pnames = {
+  home:'Home', sales:'Sales Invoice', purchases:'Purchase Invoice',
+  items:'Items', clients:'Clients & Suppliers', vat:'VAT Report',
+  dailyinv:'Daily Invoices', salesman:'Salesman', settings:'Settings',
+  servicegroups:'Service Groups', clientreport:'Client Account', addusers:'Add Users'
+};
+
+function show(pg) {
+  var pages = document.getElementsByClassName('page');
+  for (var i = 0; i < pages.length; i++) pages[i].style.display = 'none';
+  var el = document.getElementById('pg-' + pg);
+  if (el) el.style.display = 'block';
+  var bc = document.getElementById('bcLabel');
+  if (bc) bc.textContent = pnames[pg] || pg;
+  if (pg === 'home') refreshKPI();
+  if (pg === 'vat') { var vn = document.getElementById('v-vatno'); if(vn) vn.value = DB.s.vatNo; calcVAT(); }
+  if (pg === 'dailyinv') loadDaily();
+  if (pg === 'settings') { loadSettings(); renderGroups(); }
+  if (pg === 'items') renderItems();
+  if (pg === 'clients') { renderCSList(); }
+  if (pg === 'salesman') renderSM();
+}
+
+function stab(pre, tab, el) {
+  var parent = el.parentElement;
+  var tabs = parent.querySelectorAll('.tab');
+  for (var i = 0; i < tabs.length; i++) tabs[i].classList.remove('on');
+  el.classList.add('on');
+  var tcs = document.querySelectorAll('[id^="' + pre + '-"]');
+  for (var i = 0; i < tcs.length; i++) tcs[i].classList.remove('on');
+  var tc = document.getElementById(pre + '-' + tab);
+  if (tc) tc.classList.add('on');
+}
+
+var sRows = [], pRows = [], csT = 'client';
+
+function refreshKPI() {
+  var now = new Date();
+  var days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  var dateStr = days[now.getDay()] + ', ' + now.getDate() + ' ' + months[now.getMonth()] + ' ' + now.getFullYear();
+  var timeStr = now.toTimeString().slice(0,5);
+  var el; el = document.getElementById('kpi-date'); if(el) el.textContent = dateStr;
+  el = document.getElementById('kpi-time'); if(el) el.textContent = timeStr;
+
+  // Company name from settings
+  var compName = (DB.s && (DB.s.compEn||DB.s.compAr)) || 'Arabic Hisab';
+  el = document.getElementById('kpi-comp-name'); if(el) el.textContent = compName;
+
+  // Sales stats
+  var todayStr = now.toISOString().slice(0,10);
+  var sales = DB.inv || [];
+  var todaySales = 0, todayCount = 0, totalSales = 0, totalVat = 0;
+  for (var i=0; i<sales.length; i++) {
+    var inv = sales[i];
+    var t = Number(inv.total||0), v = Number(inv.vat||0);
+    totalSales += t; totalVat += v;
+    if ((inv.date||'').slice(0,10) === todayStr) { todaySales += t; todayCount++; }
+  }
+  el = document.getElementById('kpi-today-sales'); if(el) el.textContent = todaySales.toFixed(2)+' SAR';
+  el = document.getElementById('kpi-today-count'); if(el) el.textContent = todayCount + ' invoice' + (todayCount!==1?'s':'') + ' today';
+  el = document.getElementById('kpi-total-inv');   if(el) el.textContent = sales.length;
+  el = document.getElementById('kpi-total-amt');   if(el) el.textContent = 'Total ' + totalSales.toFixed(2) + ' SAR';
+  el = document.getElementById('kpi-vat-total');   if(el) el.textContent = totalVat.toFixed(2)+' SAR';
+
+  // Clients & items
+  var clients = DB.clients || [];
+  var items   = DB.items   || [];
+  el = document.getElementById('kpi-clients-count'); if(el) el.textContent = clients.length;
+  el = document.getElementById('kpi-items-count');   if(el) el.textContent = items.length + ' items registered';
+}
+
+function initApp() {
+  var td = new Date().toISOString().split('T')[0];
+  var ids = ['s-date','p-date','di-date'];
+  for (var i = 0; i < ids.length; i++) {
+    var el = document.getElementById(ids[i]);
+    if (el) el.value = td;
+  }
+  var vf = document.getElementById('vf');
+  var vt = document.getElementById('vt');
+  if (vf) vf.value = td.substring(0,7) + '-01';
+  if (vt) vt.value = td;
+  newSalesInv();
+  newPurInv();
+  popDrops();
+  loadSettings();
+  renderGroups();
+  renderSM();
+  renderItems();
+  refreshKPI();
+  setInterval(refreshKPI, 60000);
+  show('home');
+}
+
+function newSalesInv() {
+  sRows = [];
+  renderSRows();
+  var el = document.getElementById('s-no');
+  if (el) el.value = String(DB.nInv);
+  var paid = document.getElementById('s-paid');
+  if (paid) paid.value = 0;
+  var chg = document.getElementById('s-chg');
+  if (chg) chg.value = '';
+  var notes = document.getElementById('s-notes');
+  if (notes) notes.value = '';
+  updST();
+}
+
+function onItemSel(t) {
+  var sel = document.getElementById(t + '-item');
+  if (!sel || !sel.value) return;
+  var it = null;
+  for (var i = 0; i < DB.items.length; i++) {
+    if (DB.items[i].id == sel.value) { it = DB.items[i]; break; }
+  }
+  if (!it) return;
+  var price = document.getElementById(t + '-price');
+  if (price) price.value = (t === 's') ? it.sale : it.buy;
+  calcRow(t);
+}
+
+function calcRow(t) {
+  var q = parseFloat(document.getElementById(t + '-qty').value) || 0;
+  var p = parseFloat(document.getElementById(t + '-price').value) || 0;
+  var tot = document.getElementById(t + '-rowtot');
+  if (tot) tot.value = (q * p).toFixed(2);
+}
+
+function addRow(t) {
+  var sel = document.getElementById(t + '-item');
+  var it = null;
+  if (sel && sel.value) {
+    for (var i = 0; i < DB.items.length; i++) {
+      if (DB.items[i].id == sel.value) { it = DB.items[i]; break; }
+    }
+  }
+  var desc = it ? it.nen : 'Item';
+  var qty = parseFloat(document.getElementById(t + '-qty').value) || 1;
+  var price = parseFloat(document.getElementById(t + '-price').value) || 0;
+  var unitEl = document.getElementById(t + '-unit');
+  var unit = unitEl ? unitEl.value : 'PCS';
+  var row = {desc: desc, unit: unit, qty: qty, price: price, sub: qty * price};
+  if (t === 's') { sRows.push(row); renderSRows(); updST(); }
+  else { pRows.push(row); renderPRows(); updPT(); }
+  document.getElementById(t + '-qty').value = 1;
+  document.getElementById(t + '-price').value = '';
+  document.getElementById(t + '-rowtot').value = '';
+}
+
+function delLastRow(t) {
+  if (t === 's' && sRows.length) { sRows.pop(); renderSRows(); updST(); }
+  if (t === 'p' && pRows.length) { pRows.pop(); renderPRows(); updPT(); }
+}
+
+function renderSRows() {
+  var b = document.getElementById('s-tbody');
+  if (!b) return;
+  if (!sRows.length) {
+    b.innerHTML = '<tr><td colspan="7" class="empty-row">— No items added —</td></tr>';
+    return;
+  }
+  var html = '';
+  for (var i = 0; i < sRows.length; i++) {
+    var r = sRows[i];
+    html += '<tr><td style="text-align:center;">' + (i+1) + '</td>'
+      + '<td>' + r.desc + '</td>'
+      + '<td style="text-align:center;">' + (r.unit||'PCS') + '</td>'
+      + '<td style="text-align:center;">' + r.qty + '</td>'
+      + '<td style="text-align:right;">' + r.price.toFixed(2) + '</td>'
+      + '<td style="text-align:right;font-weight:bold;">' + r.sub.toFixed(2) + '</td>'
+      + '<td style="text-align:center;"><button onclick="sRows.splice(' + i + ',1);renderSRows();updST();" style="background:#e53e3e;color:white;border:none;padding:2px 8px;cursor:pointer;border-radius:4px;">✕</button></td></tr>';
+  }
+  b.innerHTML = html;
+}
+
+function updST() {
+  var sub = 0;
+  for (var i = 0; i < sRows.length; i++) sub += sRows[i].sub;
+  var vat = sub * 0.15;
+  var tot = sub + vat;
+  var el;
+  el = document.getElementById('s-sub'); if(el) el.textContent = sub.toFixed(2);
+  el = document.getElementById('s-vat'); if(el) el.textContent = vat.toFixed(2);
+  el = document.getElementById('s-total'); if(el) el.textContent = tot.toFixed(2);
+  calcChg();
+}
+
+function calcChg() {
+  var tot = parseFloat((document.getElementById('s-total') || {}).textContent) || 0;
+  var paid = parseFloat((document.getElementById('s-paid') || {}).value) || 0;
+  var chg = document.getElementById('s-chg');
+  if (chg) chg.value = (paid - tot).toFixed(2);
+}
+
+function onClientSel() {
+  var sel = document.getElementById('s-client');
+  if (!sel) return;
+  var cl = null;
+  for (var i = 0; i < DB.clients.length; i++) {
+    if (DB.clients[i].id === sel.value) { cl = DB.clients[i]; break; }
+  }
+  var cbal = document.getElementById('s-cbal');
+  if (cbal) cbal.value = cl ? (cl.ob || 0) : 0;
+}
+
+function getCurInv() {
+  var sub = 0;
+  for (var i = 0; i < sRows.length; i++) sub += sRows[i].sub;
+  var csel = document.getElementById('s-client');
+  var cname = '';
+  if (csel && csel.selectedIndex >= 0 && csel.options[csel.selectedIndex]) {
+    cname = csel.options[csel.selectedIndex].text;
+  }
+  return {
+    no: document.getElementById('s-no').value,
+    date: document.getElementById('s-date').value,
+    clientName: cname,
+    clientId: csel ? csel.value : '',
+    payType: document.getElementById('s-ptype').value,
+    notes: document.getElementById('s-notes').value,
+    items: JSON.parse(JSON.stringify(sRows)),
+    subtotal: sub, vat: sub * 0.15, total: sub * 1.15,
+    type: 'sales'
+  };
+}
+
+function saveSalesInv() {
+  if (!sRows.length) { alert('Add items first!'); return; }
+  var inv = getCurInv();
+  inv.id = Date.now();
+  DB.invoices.push(inv);
+  DB.nInv++;
+  saveDB();
+  alert('Invoice saved: ' + inv.no);
+  showPreview(inv, 'sales');
+  newSalesInv();
+}
+
+function previewSales() {
+  if (!sRows.length) { alert('No items!'); return; }
+  showPreview(getCurInv(), 'sales');
+}
+
+function searchInvs() {
+  var no = document.getElementById('ss-no').value.toLowerCase();
+  var cl = document.getElementById('ss-cl').value.toLowerCase();
+  var from = document.getElementById('ss-from').value;
+  var to = document.getElementById('ss-to').value;
+  var list = DB.invoices.filter(function(i) {
+    return (!no || i.no.toLowerCase().indexOf(no) >= 0)
+      && (!cl || (i.clientName || '').toLowerCase().indexOf(cl) >= 0)
+      && (!from || i.date >= from) && (!to || i.date <= to);
+  });
+  var b = document.getElementById('ss-tbody');
+  if (!list.length) {
+    b.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#aaa;padding:12px;">No results</td></tr>';
+    return;
+  }
+  var html = '';
+  for (var i = 0; i < list.length; i++) {
+    var inv = list[i];
+    html += '<tr>'
+      + '<td>' + inv.no + '</td>'
+      + '<td>' + inv.date + '</td>'
+      + '<td>' + (inv.clientName || '') + '</td>'
+      + '<td style="font-weight:bold;">' + inv.total.toFixed(2) + '</td>'
+      + '<td>' + (inv.payType || 'cash') + '</td>'
+      + '<td><button onclick="showPreview(DB.invoices[' + DB.invoices.indexOf(inv) + '],\'sales\')" style="background:#2b6cb0;color:white;border:none;padding:3px 8px;cursor:pointer;border-radius:4px;font-size:11px;">👁</button></td>'
+      + '</tr>';
+  }
+  b.innerHTML = html;
+}
+
+function newPurInv() {
+  pRows = [];
+  renderPRows();
+  var el = document.getElementById('p-no');
+  if (el) el.value = String(DB.nPur);
+  updPT();
+}
+
+function renderPRows() {
+  var b = document.getElementById('p-tbody');
+  if (!b) return;
+  if (!pRows.length) {
+    b.innerHTML = '<tr><td colspan="7" class="empty-row">— No items added —</td></tr>';
+    return;
+  }
+  var html = '';
+  for (var i = 0; i < pRows.length; i++) {
+    var r = pRows[i];
+    html += '<tr><td style="text-align:center;">' + (i+1) + '</td>'
+      + '<td>' + r.desc + '</td>'
+      + '<td style="text-align:center;">' + (r.unit||'PCS') + '</td>'
+      + '<td style="text-align:center;">' + r.qty + '</td>'
+      + '<td style="text-align:right;">' + r.price.toFixed(2) + '</td>'
+      + '<td style="text-align:right;font-weight:bold;">' + r.sub.toFixed(2) + '</td>'
+      + '<td style="text-align:center;"><button onclick="pRows.splice(' + i + ',1);renderPRows();updPT();" style="background:#e53e3e;color:white;border:none;padding:2px 8px;cursor:pointer;border-radius:4px;">✕</button></td></tr>';
+  }
+  b.innerHTML = html;
+}
+
+function updPT() {
+  var sub = 0;
+  for (var i = 0; i < pRows.length; i++) sub += pRows[i].sub;
+  var vat = sub * 0.15;
+  var el;
+  el = document.getElementById('p-sub'); if(el) el.textContent = sub.toFixed(2);
+  el = document.getElementById('p-vat'); if(el) el.textContent = vat.toFixed(2);
+  el = document.getElementById('p-total'); if(el) el.textContent = (sub + vat).toFixed(2);
+}
+
+function getCurPur() {
+  var sub = 0;
+  for (var i = 0; i < pRows.length; i++) sub += pRows[i].sub;
+  var ssel = document.getElementById('p-sup');
+  var sname = '';
+  if (ssel && ssel.selectedIndex >= 0 && ssel.options[ssel.selectedIndex]) {
+    sname = ssel.options[ssel.selectedIndex].text;
+  }
+  return {
+    no: document.getElementById('p-no').value,
+    date: document.getElementById('p-date').value,
+    clientName: sname, supplierName: sname,
+    payType: document.getElementById('p-ptype').value,
+    notes: document.getElementById('p-notes').value,
+    items: JSON.parse(JSON.stringify(pRows)),
+    subtotal: sub, vat: sub * 0.15, total: sub * 1.15,
+    type: 'purchase'
+  };
+}
+
+function savePurInv() {
+  if (!pRows.length) { alert('Add items first!'); return; }
+  var pur = getCurPur();
+  pur.id = Date.now();
+  DB.purchases.push(pur);
+  DB.nPur++;
+  saveDB();
+  alert('Purchase saved: ' + pur.no);
+  showPreview(pur, 'purchase');
+  newPurInv();
+}
+
+function previewPur() {
+  if (!pRows.length) { alert('No items!'); return; }
+  showPreview(getCurPur(), 'purchase');
+}
+
+function showPreview(inv, type) {
+  document.getElementById('prevContent').innerHTML = buildInvHTML(inv, type);
+  document.getElementById('prevModal').style.display = 'block';
+  window.scrollTo(0,0);
+}
+
+function printInvWindow() {
+  var content = document.getElementById('prevContent').innerHTML;
+  var w = window.open('', '_blank');
+  if (!w) { window.print(); return; }
+  w.document.open();
+  w.document.write('<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width">'
+    +'<style>'
+    +'@page{size:A4 portrait;margin:12mm 14mm 12mm 14mm}'
+    +'*{box-sizing:border-box;-webkit-print-color-adjust:exact;print-color-adjust:exact}'
+    +'html,body{margin:0;padding:0;background:#fff;width:100%;}'
+    +'</style>'
+    +'</head><body>'
+    + content
+    +'<script>window.onload=function(){setTimeout(function(){window.print();},400);}<\/script>'
+    +'</body></html>');
+  w.document.close();
+}
+
+function makeZatcaQR(sellerName, vatNo, invDateTime, totalWithVat, vatAmount) {
+  function utf8Bytes(str) { return unescape(encodeURIComponent(str)); }
+  function tlv(tag, value) {
+    var v = utf8Bytes(value);
+    return String.fromCharCode(tag) + String.fromCharCode(v.length) + v;
+  }
+  var raw = tlv(1, sellerName) + tlv(2, vatNo) + tlv(3, invDateTime)
+    + tlv(4, Number(totalWithVat).toFixed(2)) + tlv(5, Number(vatAmount).toFixed(2));
+  try { return btoa(raw); } catch(e) { return btoa(unescape(encodeURIComponent(raw))); }
+}
+
+/* Generate QR code locally as PNG data URI — no external API needed */
+function makeQRDataUri(text, size) {
+  size = size || 90;
+  try {
+    var div = document.createElement('div');
+    div.style.cssText = 'position:fixed;left:-9999px;top:-9999px;';
+    document.body.appendChild(div);
+    new QRCode(div, {
+      text: text,
+      width: size,
+      height: size,
+      correctLevel: QRCode.CorrectLevel.M
+    });
+    var canvas = div.querySelector('canvas');
+    var uri = canvas ? canvas.toDataURL('image/png') : null;
+    document.body.removeChild(div);
+    return uri;
+  } catch(e) {
+    return null;
+  }
+}
+
+function numToArabicWords(n) {
+  n = Math.round(n);
+  if (n === 0) return 'صفر';
+  var ones = ['','واحد','اثنان','ثلاثة','أربعة','خمسة','ستة','سبعة','ثمانية','تسعة','عشرة',
+    'أحد عشر','اثنا عشر','ثلاثة عشر','أربعة عشر','خمسة عشر','ستة عشر','سبعة عشر','ثمانية عشر','تسعة عشر'];
+  var tens = ['','عشرة','عشرون','ثلاثون','أربعون','خمسون','ستون','سبعون','ثمانون','تسعون'];
+  var hundreds = ['','مائة','مئتان','ثلاثمائة','أربعمائة','خمسمائة','ستمائة','سبعمائة','ثمانمائة','تسعمائة'];
+  function chunk(num) {
+    var h=Math.floor(num/100),t=Math.floor((num%100)/10),o=num%10,tn=num%100,parts=[];
+    if(h>0) parts.push(hundreds[h]);
+    if(tn<20){if(tn>0) parts.push(ones[tn]);}
+    else{if(o>0) parts.push(ones[o]+' و'+tens[t]); else parts.push(tens[t]);}
+    return parts.join(' و');
+  }
+  var parts=[],billions=Math.floor(n/1e9); n%=1e9;
+  var millions=Math.floor(n/1e6); n%=1e6;
+  var thousands=Math.floor(n/1000); n%=1000; var rem=n;
+  if(billions>0) parts.push(chunk(billions)+' مليار');
+  if(millions>0) parts.push(chunk(millions)+' مليون');
+  if(thousands>0) parts.push(thousands===1?'ألف':thousands===2?'ألفان':chunk(thousands)+' آلاف');
+  if(rem>0) parts.push(chunk(rem));
+  return parts.join(' و')+' ريال فقط لا غير';
+}
+
+function buildInvHTML(inv, type) {
+  var s = DB.s;
+  var isPur = (type === 'purchase');
+  var now = new Date();
+  var timeStr = now.toTimeString().slice(0,8);
+  var invDateISO = (inv.date||now.toISOString().slice(0,10))+'T'+timeStr+'Z';
+  var zatcaBase64 = makeZatcaQR(
+    s.compEn||s.compAr||'North Day Foundation For General Contracting Est.',
+    s.vatNo||'311522722100003',
+    invDateISO, Number(inv.total||0), Number(inv.vat||0)
+  );
+  var qrImgSrc = makeQRDataUri(zatcaBase64, 110)
+    || ('https://api.qrserver.com/v1/create-qr-code/?size=110x110&data='
+        +encodeURIComponent(zatcaBase64)+'&margin=4&ecc=L');
+
+  var items = inv.items||[];
+  var subtotal=Number(inv.subtotal||0), discount=Number(inv.discount||0);
+  var net=subtotal-discount, vat=Number(inv.vat||0), total=Number(inv.total||0);
+  var titleAr = isPur?'فاتورة شراء':'فاتورة ضريبية';
+  var titleEn = isPur?'Purchase Invoice':'Tax Invoice';
+  var vatLabel = isPur?'مورد رقم الضريبي / Supplier VAT':'عميل رقم الضريبي / Client Vat No';
+  var compEn = s.compEn||'North Day Foundation For General Contracting Est.';
+  var compAr = s.compAr||'مؤسسة نهار الشمال للمقاولات العامة';
+
+  /* ══ FINAL CSS — Arabian Code exact layout, full !important override ══ */
+  var css = '<style>'
+    +'@page{size:A4 portrait;margin:12mm 14mm 12mm 14mm}'
+    +'@media print{.inv-page{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;}}'
+    +'.inv-page{font-family:Arial,"Helvetica Neue",Helvetica,sans-serif!important;font-size:12px!important;color:#000!important;background:#fff!important;width:100%;}'
+    +'.inv-page .inv-table-wrap{width:100%;}'
+    +'.inv-page *{box-sizing:border-box!important;font-family:Arial,"Helvetica Neue",Helvetica,sans-serif!important;color:#000!important;}'
+    +'.inv-page .header-table{width:100%!important;border-collapse:collapse!important;border:none!important;margin-bottom:4px!important;}'
+    +'.inv-page .header-table td{border:none!important;vertical-align:top!important;background:#fff!important;}'
+    +'.inv-page .header-left{text-align:left!important;font-size:13.5px!important;line-height:1.35!important;font-weight:bold!important;width:38%!important;}'
+    +'.inv-page .header-center{text-align:center!important;width:24%!important;padding-top:50px!important;}'
+    +'.inv-page .title-ar{font-size:17px!important;font-weight:bold!important;display:block!important;}'
+    +'.inv-page .title-en{font-size:15px!important;font-weight:bold!important;display:block!important;}'
+    +'.inv-page .header-right{text-align:right!important;font-size:13.5px!important;line-height:1.35!important;font-weight:bold!important;width:38%!important;direction:rtl!important;}'
+    +'.inv-page .meta-container{display:flex!important;justify-content:space-between!important;margin-top:4px!important;gap:12px!important;}'
+    +'.inv-page .pill-box{border:1.5px solid #000!important;border-radius:18px!important;padding:4px 14px!important;font-size:13px!important;font-weight:bold!important;background:#fff!important;}'
+    +'.inv-page .pill-left{width:48%!important;}'
+    +'.inv-page .pill-right{width:48%!important;text-align:right!important;}'
+    +'.inv-page .meta-row{display:flex!important;justify-content:space-between!important;align-items:center!important;line-height:1.55!important;}'
+    +'.inv-page .address-box{width:100%!important;border:1.5px solid #000!important;border-radius:14px!important;padding:2px 14px!important;font-size:13px!important;font-weight:bold!important;margin-top:6px!important;margin-bottom:6px!important;display:flex!important;gap:10px!important;align-items:center!important;background:#fff!important;}'
+    +'.inv-page .main-table{width:100%!important;border-collapse:collapse!important;border:1.5px solid #000!important;}'
+    +'.inv-page .main-table th,.inv-page .main-table td{border:1px solid #000!important;padding:4px!important;font-size:12px!important;background:#fff!important;}'
+    +'.inv-page .main-table th{text-align:center!important;font-weight:bold!important;line-height:1.25!important;}'
+    +'.inv-page .col-sr{width:6%!important;text-align:center!important;}'
+    +'.inv-page .col-desc{width:52%!important;text-align:left!important;}'
+    +'.inv-page .col-unit{width:8%!important;text-align:center!important;}'
+    +'.inv-page .col-qty{width:8%!important;text-align:center!important;}'
+    +'.inv-page .col-price{width:11%!important;text-align:center!important;}'
+    +'.inv-page .col-total{width:15%!important;text-align:center!important;}'
+    +'.inv-page .item-row td{height:28px!important;vertical-align:middle!important;}'
+    +'.inv-page .item-row .col-total{font-weight:bold!important;}'
+    +'.inv-page .empty-row td{height:26px!important;border-top:none!important;border-bottom:none!important;}'
+    +'.inv-page .sum-row td{border:1px solid #000!important;padding:3px 6px!important;font-size:12.5px!important;font-weight:bold!important;height:24px!important;vertical-align:middle!important;background:#fff!important;}'
+    +'.inv-page .sum-row-first td{border-top:1.5px solid #000!important;}'
+    +'.inv-page .sum-words{text-align:right!important;padding-right:10px!important;direction:rtl!important;}'
+    +'.inv-page .sum-label{text-align:right!important;padding-right:6px!important;white-space:nowrap!important;}'
+    +'.inv-page .sum-val{text-align:center!important;font-size:14px!important;color:#0b2265!important;}'
+    +'.inv-page .footer-container{display:flex!important;justify-content:space-between!important;align-items:flex-end!important;margin-top:14px!important;padding:0 4px!important;}'
+    +'.inv-page .sign-text{font-size:12.5px!important;font-weight:bold!important;margin-bottom:6px!important;}'
+    +'.inv-page .qrcode-box{width:110px!important;height:110px!important;display:flex!important;align-items:center!important;justify-content:center!important;}'
+    +'.inv-page .qrcode-box img{width:110px!important;height:110px!important;display:block!important;}'
+    +'</style>';
+
+  var html = css + '<div class="inv-page">';
+
+  /* ══ HEADER ══ */
+  html += '<table class="header-table" cellpadding="0" cellspacing="0"><tr>'
+    +'<td class="header-left">'
+      +compEn+'<br>'
+      +'CR.: '+(s.cr||'1010853261')+'<br>'
+      +'Mobile No.: '+(s.mob||'0597953465')+'<br>'
+      +'VAT No.: '+(s.vatNo||'311522722100003')+'<br>'
+      +(s.addr||'Riyadh - Saudi Arabia')
+    +'</td>'
+    +'<td class="header-center">'
+      +'<div class="title-ar">'+titleAr+'</div>'
+      +'<div class="title-en">'+titleEn+'</div>'
+    +'</td>'
+    +'<td class="header-right">'
+      +compAr+'<br>'
+      +'س.ت: '+(s.cr||'1010853261')+'<br>'
+      +'رقم الجوال: '+(s.mob||'0597953465')+'<br>'
+      +'الرقم الضريبي: '+(s.vatNo||'311522722100003')+'<br>'
+      +'الرياض، المملكة العربية السعودية'
+    +'</td>'
+    +'</tr></table>';
+
+  /* ══ PILL BOXES (meta-container) ══ */
+  html += '<div class="meta-container">'
+    +'<div class="pill-box pill-left">'
+      +'<div class="meta-row"><span>Invoice No / رقم الفاتورة</span><span>'+(inv.no||'—')+'</span></div>'
+      +'<div class="meta-row"><span>Date / التاريخ</span><span>'+(inv.date||'—')+'</span></div>'
+      +'<div class="meta-row"><span>Payment Type / طريق الدفع</span><span>'+(inv.payType||'Cash')+'</span></div>'
+    +'</div>'
+    +'<div class="pill-box pill-right">'
+      +'<div class="meta-row" style="direction:rtl;"><span>اسم عميل / Client</span><span style="direction:ltr;">'+(inv.clientPhone||'—')+'</span></div>'
+      +'<div style="text-align:left;font-size:12.5px;margin:2px 0;">'+(inv.clientName||'—')+'</div>'
+      +'<div class="meta-row" style="direction:rtl;"><span>'+vatLabel+'</span><span style="direction:ltr;">'+(inv.clientVat||'—')+'</span></div>'
+    +'</div>'
+    +'</div>';
+
+  /* ══ ADDRESS BOX ══ */
+  html += '<div class="address-box"><span>Address / عنوان</span><span>'+(inv.clientAddr||'')+'</span></div>';
+
+  /* ══ ITEMS TABLE ══ */
+  html += '<div class="inv-table-wrap"><table class="main-table" cellpadding="0" cellspacing="0">'
+    +'<thead><tr>'
+    +'<th class="col-sr">الرقم<br>Sr.No</th>'
+    +'<th class="col-desc">البـــيـــان<br>Description</th>'
+    +'<th class="col-unit">الوحدة<br>Units</th>'
+    +'<th class="col-qty">الكميه<br>Quantity</th>'
+    +'<th class="col-price">سعر الوحدة<br>U.Price</th>'
+    +'<th class="col-total">المبلغ الاجمالي<br>Total Amount</th>'
+    +'</tr></thead>'
+    +'<tbody>';
+  for(var i=0;i<items.length;i++){
+    var r=items[i];
+    html += '<tr class="item-row">'
+      +'<td class="col-sr">'+(i+1)+'</td>'
+      +'<td class="col-desc">'+(r.desc||'')+'</td>'
+      +'<td class="col-unit">'+(r.unit||'')+'</td>'
+      +'<td class="col-qty">'+(r.qty||0)+'</td>'
+      +'<td class="col-price">'+Number(r.price||0).toFixed(2)+'</td>'
+      +'<td class="col-total">'+Number(r.sub||0).toFixed(2)+'</td>'
+      +'</tr>';
+  }
+  var emptyCount = Math.max(0, 19 - items.length);
+  for(var j=0;j<emptyCount;j++){
+    html += '<tr class="empty-row">'
+      +'<td class="col-sr"></td><td class="col-desc"></td><td class="col-unit"></td>'
+      +'<td class="col-qty"></td><td class="col-price"></td><td class="col-total"></td>'
+      +'</tr>';
+  }
+
+  /* ══ SUMMARY ROWS — same table as items for guaranteed border alignment ══ */
+  html += '<tr class="sum-row sum-row-first"><td colspan="3" class="sum-words">'+numToArabicWords(subtotal)+'</td><td colspan="2" class="sum-label">Amount /الاجمالي</td><td class="sum-val">'+subtotal.toFixed(2)+'</td></tr>'
+    +'<tr class="sum-row"><td colspan="3" class="sum-words">'+(discount>0?numToArabicWords(discount):'صفر')+'</td><td colspan="2" class="sum-label">Discount / خصم</td><td class="sum-val">'+discount.toFixed(2)+'</td></tr>'
+    +'<tr class="sum-row"><td colspan="3" class="sum-words">'+numToArabicWords(net)+'</td><td colspan="2" class="sum-label">Amount Net / صافي المبلغ</td><td class="sum-val">'+net.toFixed(2)+'</td></tr>'
+    +'<tr class="sum-row"><td colspan="3" class="sum-words">'+numToArabicWords(vat)+'</td><td colspan="2" class="sum-label">الضريبة / VAT</td><td class="sum-val">'+vat.toFixed(2)+'</td></tr>'
+    +'<tr class="sum-row"><td colspan="3" class="sum-words">'+numToArabicWords(total)+'</td><td colspan="2" class="sum-label">الصافي / Total</td><td class="sum-val">'+total.toFixed(2)+'</td></tr>'
+    +'</tbody></table></div>';
+
+  /* ══ FOOTER ══ */
+  html += '<div class="footer-container">'
+    +'<div class="qrcode-box"><img src="'+qrImgSrc+'" alt="QR" onerror="this.style.display=\'none\'"></div>'
+    +'<div class="sign-text">Customer Sign ........................................ توقيع العميل</div>'
+    +'<div class="sign-text">Salesman Sign ........................................ توقيع البائع</div>'
+    +'</div>';
+
+  html += '</div>';
+  return html;
+}
+
+function calcVAT() {
+  var from = (document.getElementById('vf') || {}).value || '';
+  var to = (document.getElementById('vt') || {}).value || '';
+  var ts = 0, tv = 0, tp = 0, pv = 0;
+  for (var i = 0; i < DB.invoices.length; i++) {
+    var inv = DB.invoices[i];
+    if ((!from || inv.date >= from) && (!to || inv.date <= to)) { ts += inv.subtotal; tv += inv.vat; }
+  }
+  for (var i = 0; i < DB.purchases.length; i++) {
+    var pur = DB.purchases[i];
+    if ((!from || pur.date >= from) && (!to || pur.date <= to)) { tp += pur.subtotal; pv += pur.vat; }
+  }
+  var el;
+  el = document.getElementById('v-ts'); if(el) el.value = ts.toFixed(2);
+  el = document.getElementById('v-sv'); if(el) el.value = tv.toFixed(2);
+  el = document.getElementById('v-tp'); if(el) el.value = tp.toFixed(2);
+  el = document.getElementById('v-pv'); if(el) el.value = pv.toFixed(2);
+  el = document.getElementById('v-pay'); if(el) el.value = (tv - pv).toFixed(2);
+}
+
+function printVAT() {
+  calcVAT();
+  var s = DB.s;
+  var html = '<div style="font-family:Tahoma,Arial,sans-serif;padding:20px;">'
+    + '<h2 style="text-align:center;background:#c6f6d5;padding:8px;border-radius:4px;">VAT Report / تقرير ضريبة القيمة المضافة</h2>'
+    + '<p style="text-align:center;margin:8px 0;">From: ' + (document.getElementById('vf') || {}).value + ' To: ' + (document.getElementById('vt') || {}).value + '</p>'
+    + '<p style="text-align:center;font-size:12px;color:#555;">VAT No: ' + s.vatNo + ' | ' + s.compEn + '</p>'
+    + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px;">'
+    + '<div style="border:2px solid #276749;padding:12px;background:#f0fff4;">'
+    + '<h3 style="margin-bottom:8px;color:#276749;">Sales / المبيعات</h3>'
+    + '<p>Total Sales: <b>' + (document.getElementById('v-ts') || {}).value + ' SAR</b></p>'
+    + '<p style="color:#c53030;">VAT (15%): <b>' + (document.getElementById('v-sv') || {}).value + ' SAR</b></p>'
+    + '</div>'
+    + '<div style="border:2px solid #b7791f;padding:12px;background:#fffbeb;">'
+    + '<h3 style="margin-bottom:8px;color:#b7791f;">Purchases / المشتريات</h3>'
+    + '<p>Total Purchases: <b>' + (document.getElementById('v-tp') || {}).value + ' SAR</b></p>'
+    + '<p style="color:#c53030;">VAT Input (15%): <b>' + (document.getElementById('v-pv') || {}).value + ' SAR</b></p>'
+    + '</div></div>'
+    + '<div style="text-align:right;margin-top:16px;">'
+    + '<b style="font-size:16px;color:#c53030;border:2px solid #c53030;padding:6px 16px;border-radius:4px;display:inline-block;">Payable VAT / الضريبة المستحقة: ' + (document.getElementById('v-pay') || {}).value + ' SAR</b>'
+    + '</div></div>';
+  document.getElementById('prevContent').innerHTML = html;
+  document.getElementById('prevModal').style.display = 'block';
+}
+
+function loadDaily() {
+  var dt = (document.getElementById('di-date') || {}).value || '';
+  var all = [];
+  for (var i = 0; i < DB.invoices.length; i++) if (DB.invoices[i].date === dt) all.push(DB.invoices[i]);
+  for (var i = 0; i < DB.purchases.length; i++) if (DB.purchases[i].date === dt) all.push(DB.purchases[i]);
+  var b = document.getElementById('di-tbody');
+  if (!b) return;
+  if (!all.length) {
+    b.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#aaa;padding:14px;">No invoices for this date</td></tr>';
+    return;
+  }
+  var html = '';
+  for (var i = 0; i < all.length; i++) {
+    var inv = all[i];
+    var idx = inv.type === 'sales' ? DB.invoices.indexOf(inv) : DB.purchases.indexOf(inv);
+    var arr = inv.type === 'sales' ? 'DB.invoices' : 'DB.purchases';
+    html += '<tr>'
+      + '<td>' + inv.no + '</td>'
+      + '<td><span style="padding:2px 7px;background:' + (inv.type === 'sales' ? '#c6f6d5' : '#fefcbf') + ';border-radius:8px;font-size:11px;color:#333">' + (inv.type === 'sales' ? 'Sale' : 'Purch') + '</span></td>'
+      + '<td>' + (inv.clientName || '') + '</td>'
+      + '<td style="font-weight:bold;">' + inv.total.toFixed(2) + '</td>'
+      + '<td>' + (inv.payType || 'cash') + '</td>'
+      + '<td><button onclick="showPreview(' + arr + '[' + idx + '],\'' + inv.type + '\')" style="background:#2b6cb0;color:white;border:none;padding:3px 8px;cursor:pointer;border-radius:4px;font-size:11px;">👁</button></td>'
+      + '</tr>';
+  }
+  b.innerHTML = html;
+}
+
+function renderItems() {
+  var q = ((document.getElementById('it-srch') || {}).value || '').toLowerCase();
+  var b = document.getElementById('it-tbody');
+  if (!b) return;
+  var list = DB.items.filter(function(it) {
+    return !q || it.nen.toLowerCase().indexOf(q) >= 0 || (it.nar || '').indexOf(q) >= 0;
+  });
+  if (!list.length) {
+    b.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#aaa;padding:12px;">No items</td></tr>';
+    return;
+  }
+  var html = '';
+  for (var i = 0; i < list.length; i++) {
+    var it = list[i];
+    html += '<tr onclick="loadItem(' + it.id + ')" style="cursor:pointer;">'
+      + '<td style="color:#2b6cb0;font-weight:bold;">' + it.id + '</td>'
+      + '<td>' + it.nen + '</td>'
+      + '<td style="direction:rtl;font-size:11px;">' + (it.nar || '') + '</td>'
+      + '<td>' + (it.buy || 0) + '</td>'
+      + '<td>' + (it.sale || 0) + '</td>'
+      + '<td>' + it.unit + '</td>'
+      + '</tr>';
+  }
+  b.innerHTML = html;
+}
+
+function loadItem(id) {
+  var it = null;
+  for (var i = 0; i < DB.items.length; i++) if (DB.items[i].id === id) { it = DB.items[i]; break; }
+  if (!it) return;
+  document.getElementById('it-no').value = it.id;
+  document.getElementById('it-nen').value = it.nen || '';
+  document.getElementById('it-nar').value = it.nar || '';
+  document.getElementById('it-bc').value = it.bc || '';
+  document.getElementById('it-buy').value = it.buy || 0;
+  document.getElementById('it-sale').value = it.sale || 0;
+  document.getElementById('it-unit').value = it.unit || 'PCS';
+  document.getElementById('it-grp').value = it.grp || 'General';
+}
+
+function clearItem() {
+  var ids = ['it-no','it-nen','it-nar','it-bc'];
+  for (var i = 0; i < ids.length; i++) { var el = document.getElementById(ids[i]); if(el) el.value = ''; }
+  document.getElementById('it-buy').value = 0;
+  document.getElementById('it-sale').value = 0;
+  document.getElementById('it-no').value = 'NEW';
+}
+
+function saveItem() {
+  var nen = document.getElementById('it-nen').value.trim();
+  if (!nen) { alert('Enter item name!'); return; }
+  var existId = parseInt(document.getElementById('it-no').value);
+  var ex = null;
+  for (var i = 0; i < DB.items.length; i++) if (DB.items[i].id === existId) { ex = DB.items[i]; break; }
+  var obj = {
+    nen: nen, nar: document.getElementById('it-nar').value,
+    bc: document.getElementById('it-bc').value,
+    buy: parseFloat(document.getElementById('it-buy').value) || 0,
+    sale: parseFloat(document.getElementById('it-sale').value) || 0,
+    unit: document.getElementById('it-unit').value,
+    grp: document.getElementById('it-grp').value || 'General'
+  };
+  if (ex) { for (var k in obj) ex[k] = obj[k]; }
+  else { obj.id = DB.nItem++; DB.items.push(obj); }
+  saveDB(); renderItems(); popDrops(); alert('Item saved!');
+}
+
+function delItem() {
+  var id = parseInt(document.getElementById('it-no').value);
+  if (isNaN(id) || !confirm('Delete item?')) return;
+  DB.items = DB.items.filter(function(i) { return i.id !== id; });
+  saveDB(); renderItems(); popDrops(); clearItem();
+}
+
+function renderGroups() {
+  var b = document.getElementById('grp-tbody');
+  if (!b) return;
+  var html = '';
+  for (var i = 0; i < DB.groups.length; i++) {
+    var g = DB.groups[i];
+    html += '<tr><td>' + (i+1) + '</td><td>' + g + '</td>'
+      + '<td><button onclick="delGroup(\'' + g + '\')" style="background:#e53e3e;color:white;border:none;padding:2px 8px;cursor:pointer;border-radius:4px;font-size:11px;">Del</button></td></tr>';
+  }
+  b.innerHTML = html || '<tr><td colspan="3" style="color:#aaa;text-align:center;">No groups</td></tr>';
+  updateGroupSelects();
+}
+
+function updateGroupSelects() {
+  var opts = '<option value="">All Groups</option>';
+  for (var i = 0; i < DB.groups.length; i++) opts += '<option value="' + DB.groups[i] + '">' + DB.groups[i] + '</option>';
+  var ids = ['s-grp','p-grp','it-grp'];
+  for (var i = 0; i < ids.length; i++) { var el = document.getElementById(ids[i]); if(el) el.innerHTML = opts; }
+}
+
+function addGroup() {
+  var n = document.getElementById('ng-inp').value.trim();
+  if (!n || DB.groups.indexOf(n) >= 0) { alert('Enter unique group name!'); return; }
+  DB.groups.push(n); saveDB(); renderGroups(); popDrops();
+  document.getElementById('ng-inp').value = '';
+}
+
+function delGroup(g) {
+  if (!confirm('Delete group: ' + g + '?')) return;
+  DB.groups = DB.groups.filter(function(x) { return x !== g; });
+  saveDB(); renderGroups(); popDrops();
+}
+
+function filterItems(t) {
+  var grp = (document.getElementById(t + '-grp') || {}).value || '';
+  var sel = document.getElementById(t + '-item');
+  if (!sel) return;
+  var opts = '<option value="">-- Select Item --</option>';
+  for (var i = 0; i < DB.items.length; i++) {
+    var it = DB.items[i];
+    if (!grp || it.grp === grp) opts += '<option value="' + it.id + '">' + it.nen + '</option>';
+  }
+  sel.innerHTML = opts;
+}
+
+function renderCSList() {
+  var q = ((document.getElementById('cs-q') || {}).value || '').toLowerCase();
+  var arr = csT === 'client' ? DB.clients : DB.suppliers;
+  var b = document.getElementById('cs-tbody');
+  if (!b) return;
+  var list = arr.filter(function(c) { return !q || (c.name || '').toLowerCase().indexOf(q) >= 0; });
+  if (!list.length) {
+    b.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#aaa;padding:12px;">No records</td></tr>';
+    return;
+  }
+  var html = '';
+  for (var i = 0; i < list.length; i++) {
+    var c = list[i];
+    html += '<tr onclick="loadCS(\'' + c.id + '\')" style="cursor:pointer;">'
+      + '<td style="color:#2b6cb0;font-weight:bold;">' + c.id + '</td>'
+      + '<td>' + c.name + '</td>'
+      + '<td>' + (c.mob || '') + '</td>'
+      + '<td style="font-size:11px;">' + (c.taxno || '') + '</td>'
+      + '<td>' + (c.ob || 0) + '</td>'
+      + '</tr>';
+  }
+  b.innerHTML = html;
+}
+
+function loadCS(id) {
+  var all = DB.clients.concat(DB.suppliers);
+  var c = null;
+  for (var i = 0; i < all.length; i++) if (all[i].id === id) { c = all[i]; break; }
+  if (!c) return;
+  csT = c.type || 'client';
+  document.getElementById('cs-acct').value = c.id;
+  document.getElementById('cs-name').value = c.name || '';
+  var typeEl = document.getElementById('cs-type'); if(typeEl) typeEl.value = csT;
+  document.getElementById('cs-mob').value = c.mob || '';
+  document.getElementById('cs-taxno').value = c.taxno || '';
+  document.getElementById('cs-city').value = c.city || '';
+  document.getElementById('cs-ob').value = c.ob || 0;
+  document.getElementById('cs-notes').value = c.notes || '';
+  stab('cs', 'data', document.querySelectorAll('#pg-clients .tab')[0]);
+}
+
+function clearCS() {
+  var ids = ['cs-acct','cs-name','cs-mob','cs-taxno','cs-city','cs-notes'];
+  for (var i = 0; i < ids.length; i++) { var el = document.getElementById(ids[i]); if(el) el.value = ''; }
+  document.getElementById('cs-ob').value = 0;
+}
+
+function saveCS() {
+  var name = document.getElementById('cs-name').value.trim();
+  if (!name) { alert('Enter name!'); return; }
+  var obj = {
+    name: name, type: csT,
+    mob: document.getElementById('cs-mob').value,
+    taxno: document.getElementById('cs-taxno').value,
+    city: document.getElementById('cs-city').value,
+    ob: parseFloat(document.getElementById('cs-ob').value) || 0,
+    notes: document.getElementById('cs-notes').value
+  };
+  var acct = document.getElementById('cs-acct').value;
+  var arr = csT === 'client' ? DB.clients : DB.suppliers;
+  var ex = null;
+  for (var i = 0; i < arr.length; i++) if (arr[i].id === acct) { ex = arr[i]; break; }
+  if (ex) { for (var k in obj) ex[k] = obj[k]; }
+  else {
+    obj.id = csT === 'client' ? String(DB.nClient++) : ('SUP' + String(DB.suppliers.length + 1).padStart(3,'0'));
+    arr.push(obj);
+  }
+  saveDB(); renderCSList(); popDrops(); alert('Saved!');
+}
+
+function delCS() {
+  var acct = document.getElementById('cs-acct').value;
+  if (!acct || !confirm('Delete?')) return;
+  DB.clients = DB.clients.filter(function(c) { return c.id !== acct; });
+  DB.suppliers = DB.suppliers.filter(function(c) { return c.id !== acct; });
+  saveDB(); renderCSList(); clearCS();
+}
+
+function renderSM() {
+  var b = document.getElementById('sm-tbody');
+  if (!b) return;
+  if (!DB.salesmen.length) {
+    b.innerHTML = '<tr><td colspan="3" style="text-align:center;color:#aaa;">No salesmen</td></tr>';
+    return;
+  }
+  var html = '';
+  for (var i = 0; i < DB.salesmen.length; i++) {
+    var s = DB.salesmen[i];
+    html += '<tr><td>' + s.id + '</td><td>' + s.name + '</td>'
+      + '<td><button onclick="delSM(' + s.id + ')" style="background:#e53e3e;color:white;border:none;padding:2px 8px;cursor:pointer;border-radius:4px;font-size:11px;">Del</button></td></tr>';
+  }
+  b.innerHTML = html;
+}
+
+function addSM() {
+  var n = document.getElementById('sm-name').value.trim();
+  if (!n) { alert('Enter name!'); return; }
+  DB.salesmen.push({id: Date.now(), name: n});
+  saveDB(); renderSM();
+  document.getElementById('sm-name').value = '';
+}
+
+function delSM(id) {
+  if (!confirm('Delete?')) return;
+  DB.salesmen = DB.salesmen.filter(function(s) { return s.id !== id; });
+  saveDB(); renderSM();
+}
+
+function loadSettings() {
+  var s = DB.s;
+  var m = {
+    'set-en': 'compEn', 'set-ar': 'compAr', 'set-vn': 'vatNo',
+    'set-cr': 'cr', 'set-addr': 'addr', 'set-mob': 'mob',
+    'set-email': 'email', 'set-terms': 'terms', 'set-pfx': 'pfx'
+  };
+  for (var id in m) { var el = document.getElementById(id); if(el) el.value = s[m[id]] || ''; }
+  var sino = document.getElementById('set-sino');
+  if (sino) sino.value = s.sino || 381;
+}
+
+function saveSettings() {
+  var m = {
+    'set-en': 'compEn', 'set-ar': 'compAr', 'set-vn': 'vatNo',
+    'set-cr': 'cr', 'set-addr': 'addr', 'set-mob': 'mob',
+    'set-email': 'email', 'set-terms': 'terms', 'set-pfx': 'pfx'
+  };
+  for (var id in m) { var el = document.getElementById(id); if(el) DB.s[m[id]] = el.value; }
+  DB.s.sino = parseInt(document.getElementById('set-sino').value) || 381;
+  saveDB(); alert('Settings saved!');
+}
+
+function popDrops() {
+  updateGroupSelects();
+  var itemOpts = '<option value="">-- Select Item --</option>';
+  for (var i = 0; i < DB.items.length; i++) {
+    itemOpts += '<option value="' + DB.items[i].id + '">' + DB.items[i].nen + '</option>';
+  }
+  var selIds = ['s-item','p-item'];
+  for (var i = 0; i < selIds.length; i++) { var el = document.getElementById(selIds[i]); if(el) el.innerHTML = itemOpts; }
+
+  var cliOpts = '';
+  for (var i = 0; i < DB.clients.length; i++) {
+    cliOpts += '<option value="' + DB.clients[i].id + '">' + DB.clients[i].name + '</option>';
+  }
+  var csel = document.getElementById('s-client');
+  if (csel) csel.innerHTML = cliOpts;
+
+  var supOpts = '';
+  for (var i = 0; i < DB.suppliers.length; i++) {
+    supOpts += '<option value="' + DB.suppliers[i].id + '">' + DB.suppliers[i].name + '</option>';
+  }
+  var ssel = document.getElementById('p-sup');
+  if (ssel) ssel.innerHTML = supOpts;
+}
+
+renderAccounts();
+</script>
+</body>
+</html>
